@@ -114,7 +114,7 @@ const RegisterPage = () => {
           <Typography fontSize={14} fontWeight={400}>
             Sudah memiliki akun?
           </Typography>
-          <Link href="/register" color="inherit" underline="always">
+          <Link href="/login" color="inherit" underline="always">
             Login
           </Link>
         </Stack>
