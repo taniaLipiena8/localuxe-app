@@ -5,24 +5,28 @@ import {
   Box,
   Typography,
   Button,
-  useTheme,
   Link,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import EmailField from "../login/components/EmailField";
-import PasswordField from "../login/components/PasswordField";
-import CustomerForm from "./components/customer/CustomerForm";
-import { Margin, Troubleshoot } from "@mui/icons-material";
-import SellerForm from "./components/seller/SellerForm";
+import CustomerForm from "./components/formFields/CustomerForm";
+import CustomerConfirmPasswordField from "./components/formFields/CustomerConfirmPasswordField";
+import CustomerEmailField from "./components/formFields/CustomerEmailField";
+import CustomerNameField from "./components/formFields/CustomerNameField";
+import CustomerPasswordField from "./components/formFields/CustomerPasswordField";
+import UsernameField from "./components/formFields/UsernameField";
+import EmailField from "./components/formFields/EmailField";
+import PasswordField from "./components/formFields/PasswordField";
+import NamaLengkapField from "./components/formFields/NamaLengkapField";
+import GenderField from "./components/formFields/GenderField";
+import PhoneField from "./components/formFields/PhoneField";
+import ImageField from "./components/formFields/ImageField";
+import { BorderColor } from "@mui/icons-material";
 
-const RegisterPage = () => {
-  const theme = useTheme();
+const RegisterPage: React.FC = () => {
   const form = useForm();
-  const [isCustomer, setIsCustomer] = useState<boolean>(Troubleshoot);
 
   const rootStyle = {
-    backgroundColor: "#F7E7E7",
     minHeight: "100vh",
     display: "flex",
     justifyContent: "center",
@@ -37,9 +41,10 @@ const RegisterPage = () => {
     flexDirection: "column",
     borderRadius: "16px",
     marginY: 4,
+    border: "1px solid #674342",
   };
 
-  const logoStyle: SxProps = {
+  const titleStyle: SxProps = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -49,52 +54,28 @@ const RegisterPage = () => {
   return (
     <Stack sx={rootStyle}>
       <Card sx={cardStyle}>
-        <Box sx={logoStyle}>
-          <Typography fontSize={"32px"}>Buat Akun LOCALUXE</Typography>
-        </Box>
-        <Box
-          sx={{
-            flexDirection: "column",
-            display: "flex",
-            justifyContent: "start",
-            mb: 2,
-          }}
-        >
-          <Typography
-            fontSize={18}
-            fontWeight="bold"
-            sx={{ paddingBottom: 1, textAlign: "start" }}
-          >
-            Apa Peran Anda
+        <Box sx={titleStyle}>
+          <Typography fontSize={"32px"} color={"#674342"}>
+            Buat Akun LOCALUXE
           </Typography>
-          <Box
-            sx={{
-              flexDirection: "row",
-              display: "flex",
-            }}
-            gap={2}
-          >
-            <Button
-              disabled={isCustomer}
-              variant="contained"
-              onClick={() => setIsCustomer(true)}
-              sx={{ width: "100%", color: "white" }}
-            >
-              Customer
-            </Button>
-            <Button
-              disabled={!isCustomer}
-              variant="contained"
-              onClick={() => setIsCustomer(false)}
-              sx={{ width: "100%", color: "white" }}
-            >
-              Seller
-            </Button>
-          </Box>
         </Box>
+
         <FormProvider {...form}>
           <form>
-            {isCustomer ? <CustomerForm /> : <SellerForm />}
+            <Stack
+              display={"flex"}
+              flexDirection={"column"}
+              width={"100%"}
+              gap={2}
+            >
+              <UsernameField />
+              <NamaLengkapField />
+              <EmailField />
+              <PasswordField />
+              <GenderField />
+              <PhoneField />
+              <ImageField />
+            </Stack>
             <Button
               type="submit"
               variant="contained"
@@ -111,7 +92,7 @@ const RegisterPage = () => {
             flexDirection: "row",
           }}
         >
-          <Typography fontSize={14} fontWeight={400}>
+          <Typography fontSize={14} fontWeight={400} color={"#674342"}>
             Sudah memiliki akun?
           </Typography>
           <Link href="/login" color="inherit" underline="always">

@@ -2,17 +2,18 @@ import { FormControl, TextField } from '@mui/material'
 import React from 'react'
 import Field from '../../../../../components/formField/Field'
 
-const CustomerNameField = () => {
+const NamaLengkapField = () => {
   return (
+    
     <FormControl fullWidth>
       <Field
-        title="Nama"
+        title="Nama Lengkap"
         child={
-          <TextField fullWidth label="Nama" variant="outlined" size="small" />
+          <TextField fullWidth label="Nama Lengkap" variant="outlined" size="small" />
         }
       />
     </FormControl>
   )
 }
 
-export default CustomerNameField
+export default NamaLengkapField

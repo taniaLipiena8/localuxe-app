@@ -1,7 +1,8 @@
 import { FormControl, TextField } from "@mui/material";
+import React from "react";
 import Field from "../../../../../components/formField/Field";
 
-const CustomerEmailField = () => {
+const EmailField: React.FC = () => {
   return (
     <FormControl fullWidth>
       <Field
@@ -14,4 +15,4 @@ const CustomerEmailField = () => {
   );
 };
 
-export default CustomerEmailField;
+export default EmailField;

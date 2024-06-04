@@ -1,9 +1,23 @@
 import { Box, Button, useTheme } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const VisitorButtons = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  function handleOnClickLogin() {
+    navigate({
+      pathname: "/login",
+    });
+  }
+
+  function handleOnClickRegister() {
+    navigate({
+      pathname: "/register",
+    });
+  }
+
   return (
     <Box
       sx={{
@@ -14,18 +28,15 @@ const VisitorButtons = () => {
       }}
       gap={3}
     >
-      <ShoppingCartIcon
-        sx={{ color: theme.palette.background.default, cursor: "pointer" }}
-        fontSize="large"
-      />
       <Button
         fullWidth
         variant="contained"
+        onClick={handleOnClickLogin}
         sx={{
           height: "36px",
           minWidth: "80px",
           backgroundColor: theme.palette.background.default,
-          color: theme.palette.primary.dark,
+          color:"#674342",
           borderRadius: "8px",
           textTransform: "none",
           ":hover": {
@@ -33,15 +44,16 @@ const VisitorButtons = () => {
           },
         }}
       >
-        Log In
+        LOG IN
       </Button>
       <Button
         fullWidth
         variant="contained"
+        onClick={handleOnClickRegister}
         sx={{
           height: "36px",
           backgroundColor: theme.palette.background.default,
-          color: theme.palette.primary.dark,
+          color:"#674342",
           borderRadius: "8px",
           textTransform: "none",
           ":hover": {
@@ -50,7 +62,7 @@ const VisitorButtons = () => {
           },
         }}
       >
-        Register
+        REGISTER
       </Button>
     </Box>
   );

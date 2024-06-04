@@ -1,84 +1,84 @@
-import { AccountCircle, PersonOutline } from "@mui/icons-material";
-import {
-  Box,
-  Container,
-  InputAdornment,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Container, Link, Typography} from "@mui/material";
 import React from "react";
-import SearchIcon from "@mui/icons-material/Search";
 import VisitorButtons from "./components/VisitorButtons";
 
-const Navbar = () => {
-  const theme = useTheme();
+const Navbar: React.FC = () => {
+
   return (
-    <Box bgcolor={theme.palette.primary.main}>
+    <Box bgcolor="#F8DAD9" sx={{ position: "sticky", top: 0, zIndex: 1022 }}>
       <Container fixed maxWidth={"xl"}>
         <Box
           minHeight={60}
           display={"flex"}
-          justifyContent={"space-between"}
           alignItems={"center"}
+          justifyContent={"center"}
         >
-          <Box display={"flex"} gap={2} alignItems={"center"} width={"35%"}>
-            <Box paddingRight={3}>
+          <Box paddingRight={6}>
+            <Link href="/" underline="none">
               <Typography
-                fontSize={"30px"}
-                color={theme.palette.background.default}
+                color={"#674342"}
                 sx={{ cursor: "pointer" }}
+                fontSize={"30px"}
               >
                 LOCALUXE
               </Typography>
-            </Box>
-            <Typography
-              color={theme.palette.background.default}
-              sx={{ cursor: "pointer" }}
-            >
-              Wanita
-            </Typography>
-            <Typography
-              color={theme.palette.background.default}
-              sx={{ cursor: "pointer" }}
-            >
-              Pria
-            </Typography>
-            <Typography
-              color={theme.palette.background.default}
-              sx={{ cursor: "pointer" }}
-            >
-              Anak
-            </Typography>
-            <Typography
-              color={theme.palette.background.default}
-              sx={{ cursor: "pointer" }}
-            >
-              Brands
-            </Typography>
+            </Link>
           </Box>
-          <Box
-            display={"flex"}
-            alignItems={"center"}
-            sx={{ backgroundColor: "white", borderRadius: "4px" }}
-            width={"25%"}
-          >
-            <TextField
-              size="small"
-              placeholder="Search"
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-                sx: { height: "36px" },
-              }}
-            />
+          <Box display={"flex"} gap={7} justifyContent={"center"} paddingX={7}>
+            <Link href="/insights" underline="none">
+              <Typography
+                color={"#674342"}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    textDecoration: "underline ",
+                  },
+                }}
+              >
+                INSIGHTS
+              </Typography>
+            </Link>
+            <Link href="/brands" underline="none">
+              <Typography
+                color={"#674342"}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    textDecoration: "underline ",
+                  },
+                }}
+              >
+                BRANDS
+              </Typography>
+            </Link>
+            <Link href="/game" underline="none">
+              <Typography
+                color={"#674342"}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    textDecoration: "underline ",
+                  },
+                }}
+              >
+                GAME
+              </Typography>
+            </Link>
+            <Link href="/tukar-poin" underline="none">
+              <Typography
+                color={"#674342"}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    textDecoration: "underline ",
+                  },
+                }}
+              >
+                TUKAR POIN
+              </Typography>
+            </Link>
           </Box>
-          <Box display={"flex"} alignItems={"center"} width={"25%"}>
+          <Box display={"flex"} alignItems={"center"} paddingLeft={6}>
             <VisitorButtons />
           </Box>
         </Box>

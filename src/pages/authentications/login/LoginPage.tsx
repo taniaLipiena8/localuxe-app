@@ -6,19 +6,16 @@ import {
   Stack,
   SxProps,
   Typography,
-  useTheme,
 } from "@mui/material";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import EmailField from "./components/EmailField";
 import PasswordField from "./components/PasswordField";
 
-const LoginPage = () => {
-  const theme = useTheme();
+const LoginPage: React.FC = () => {
   const form = useForm();
 
   const rootStyle = {
-    backgroundColor: "#F7E7E7",
     height: "100vh",
     display: "flex",
     justifyContent: "center",
@@ -32,6 +29,7 @@ const LoginPage = () => {
     width: "400px",
     flexDirection: "column",
     borderRadius: "16px",
+    border: "1px solid #674342",
   };
 
   const logoStyle: SxProps = {
@@ -44,7 +42,9 @@ const LoginPage = () => {
     <Stack sx={rootStyle}>
       <Card sx={cardStyle}>
         <Box sx={logoStyle}>
-          <Typography fontSize={"32px"}>Selamat datang di LOCALUXE</Typography>
+          <Typography color={"#674342"} fontSize={"32px"}>
+            Selamat datang di LOCALUXE
+          </Typography>
         </Box>
         <FormProvider {...form}>
           <form>
@@ -53,18 +53,10 @@ const LoginPage = () => {
               flexDirection={"column"}
               width={"100%"}
               gap={2}
+              marginBottom={6}
             >
               <EmailField />
               <PasswordField />
-            </Box>
-            <Box
-              sx={{
-                mb: 6,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button variant="text">Lupa password?</Button>
             </Box>
             <Button
               type="submit"
@@ -75,8 +67,14 @@ const LoginPage = () => {
             </Button>
           </form>
         </FormProvider>
-        <Stack sx={{ display: "flex", justifyContent: "center", flexDirection:'row' }}>
-          <Typography fontSize={14} fontWeight={400}>
+        <Stack
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "row",
+          }}
+        >
+          <Typography fontSize={14} fontWeight={400} color={"#674342"}>
             Belum memiliki akun?
           </Typography>
           <Link href="/register" color="inherit" underline="always">
