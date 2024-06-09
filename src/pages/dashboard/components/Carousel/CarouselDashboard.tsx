@@ -4,7 +4,7 @@ import ArrowLeft from "./ArrowLeft";
 import ArrowRight from "./ArrowRight";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
-const CarouselDashboard = () => {
+const CarouselDashboard: React.FC = () => {
   //get image from db next time
   const [index, setIndex] = useState<number>(0);
 
@@ -43,7 +43,7 @@ const CarouselDashboard = () => {
     setIndex(slideIndex);
   };
   console.log(index);
-  
+
   return (
     <Box
       sx={{
@@ -75,15 +75,16 @@ const CarouselDashboard = () => {
         />
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        {tempImages.map((slide, idx) => (
+        {tempImages.map((_slide, idx) => (
           <Button
+            key={idx}
             sx={{
               margin: "0 3px",
               cursor: "pointer",
             }}
-            onClick={()=>changeIndex(idx)}
+            onClick={() => changeIndex(idx)}
           >
-            <FiberManualRecordIcon key={idx} fontSize="small"/>
+            <FiberManualRecordIcon key={idx} fontSize="small" />
           </Button>
         ))}
       </Box>

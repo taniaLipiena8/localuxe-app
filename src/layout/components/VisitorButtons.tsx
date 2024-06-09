@@ -1,8 +1,9 @@
 import { Box, Button, useTheme } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import useAxiosAuth from "../../hooks/useAxiosAuth";
 
-const VisitorButtons = () => {
+const VisitorButtons: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -16,6 +17,23 @@ const VisitorButtons = () => {
     navigate({
       pathname: "/register",
     });
+  }
+
+  const axiosAuth = useAxiosAuth()
+
+  const getUser = async () => {
+    try {
+      console.log(axiosAuth);
+      
+      const response = await axiosAuth.get("/user_data",);
+      console.log(response.data.data);
+    } catch (error) {
+      console.log("Get user error");
+    }
+  };
+  
+  const handleClick =()=>{
+    getUser()
   }
 
   return (
@@ -49,7 +67,7 @@ const VisitorButtons = () => {
       <Button
         fullWidth
         variant="contained"
-        onClick={handleOnClickRegister}
+        onClick={handleClick}
         sx={{
           height: "36px",
           backgroundColor: theme.palette.background.default,

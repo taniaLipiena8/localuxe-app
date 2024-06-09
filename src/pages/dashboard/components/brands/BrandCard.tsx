@@ -1,12 +1,11 @@
-import { Box, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
 
 interface Props {
   index: number;
 }
 
-const BrandCard: React.FC<Props> = ({ index }) => {
-  const theme = useTheme();
+const BrandCard: React.FC<Props> = () => {
   return (
     <Stack
       direction={"column"}

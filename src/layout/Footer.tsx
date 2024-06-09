@@ -1,7 +1,7 @@
 import { Box, Divider, Typography } from "@mui/material";
 import React from "react";
 
-const Footer = () => {
+const Footer : React.FC= () => {
   return (
     <Box bgcolor="#F8DAD9" padding={2}>
       <Box height={"20px"}></Box>

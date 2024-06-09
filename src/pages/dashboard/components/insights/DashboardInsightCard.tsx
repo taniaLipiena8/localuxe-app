@@ -1,25 +1,25 @@
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, CardMedia, Stack, Typography } from "@mui/material";
 import React from "react";
+import { InsightListRecord } from "../../../../models/InsightListModel";
 
-const DashboardInsightCard: React.FC = () => {
+interface Props {
+  insightData: InsightListRecord | null;
+}
+
+const DashboardInsightCard: React.FC<Props> = ({ insightData }) => {
   return (
     <Card sx={{ display: "flex", width: "100%", height: "130px" }}>
-      <CardMedia
-        component="img"
-        sx={{ width: 80, objectFit: "contain", padding: 2 }}
-        image="/placeholderImage.png"
-        alt="insight image"
-      />
+      <Stack width={150} padding={1} sx={{ justifyContent: "center" }}>
+        <CardMedia
+          component="img"
+          sx={{ width: "100%", height: "65%", objectFit: "fill" }}
+          image={insightData?.gambar}
+          alt="insight image"
+        />
+      </Stack>
       <CardContent
         sx={{
           textAlign: "left",
-          justifyContent: "space-between",
         }}
       >
         <Stack
@@ -30,14 +30,14 @@ const DashboardInsightCard: React.FC = () => {
           direction={"column"}
         >
           <Typography component="div" fontSize={18}>
-            Merk Fashion Lokal Di Indonesia Berkembang Pesat
+            {insightData?.judul}
           </Typography>
           <Typography
             variant="subtitle1"
             color="text.secondary"
             component="div"
           >
-            Senin, 06 Mei 2024
+           {insightData?.tanggalPembuatan}
           </Typography>
         </Stack>
       </CardContent>

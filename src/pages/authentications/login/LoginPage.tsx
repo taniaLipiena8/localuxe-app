@@ -1,20 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Button,
   Card,
+  IconButton,
+  InputAdornment,
   Link,
   Stack,
   SxProps,
+  TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import EmailField from "./components/EmailField";
-import PasswordField from "./components/PasswordField";
-
+import React, { useContext, useState } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import Field from "../../../components/formField/Field";
+import toast, { Toaster } from "react-hot-toast";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
+import axiosClient from "../../../services/AxiosClient";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import AuthContext from "../../../context/AuthProvider";
 const LoginPage: React.FC = () => {
-  const form = useForm();
-
+  // ============================================== Styles =================================================
   const rootStyle = {
     height: "100vh",
     display: "flex",
@@ -38,6 +45,39 @@ const LoginPage: React.FC = () => {
     alignItems: "center",
     mb: 5,
   };
+
+  // ========================================= Hooks and States =============================================
+  const form = useForm();
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { setExp, setToken } = useContext(AuthContext);
+
+  // ============================================== Functions =================================================
+
+  const handleOnSubmit = async (value: any) => {
+    try {
+      const body = {
+        email_pengguna: value.email,
+        password_pengguna: value.password,
+      };
+      const response = await axiosClient.post("/login", body, {
+        withCredentials: true,
+      });
+
+      setToken(response.data.data.access_token);
+      const decoded = jwtDecode(response.data.data.access_token);
+      console.log("hasil decode", decoded);
+      setExp(decoded.exp!);
+
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+      console.log("Error Login", error);
+    }
+  };
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   return (
     <Stack sx={rootStyle}>
       <Card sx={cardStyle}>
@@ -47,7 +87,7 @@ const LoginPage: React.FC = () => {
           </Typography>
         </Box>
         <FormProvider {...form}>
-          <form>
+          <form onSubmit={form.handleSubmit(handleOnSubmit)}>
             <Box
               display={"flex"}
               flexDirection={"column"}
@@ -55,8 +95,75 @@ const LoginPage: React.FC = () => {
               gap={2}
               marginBottom={6}
             >
-              <EmailField />
-              <PasswordField />
+              <Controller
+                name="email"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Email"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Email"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        type="email"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Password"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        value={value ?? ""}
+                        onChange={onChange}
+                        fullWidth
+                        label="Password"
+                        variant="outlined"
+                        size="small"
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    }
+                  />
+                )}
+              />
             </Box>
             <Button
               type="submit"
@@ -82,6 +189,7 @@ const LoginPage: React.FC = () => {
           </Link>
         </Stack>
       </Card>
+      <Toaster />
     </Stack>
   );
 };

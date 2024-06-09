@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-const BaseLayout = () => {
+const BaseLayout: React.FC = () => {
   const theme = useTheme();
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -13,7 +13,8 @@ const BaseLayout = () => {
         sx={{
           flex: 1,
           backgroundColor: theme.palette.background.default,
-          py: 5,
+          pb: 5,
+          pt:2
         }}
       >
         <Outlet />

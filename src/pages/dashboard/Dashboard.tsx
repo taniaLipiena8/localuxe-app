@@ -1,4 +1,4 @@
-import { Box, Stack, Grid, Typography, useTheme } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 import React, { useEffect } from "react";
 import CarouselDashboard from "./components/Carousel/CarouselDashboard";
 import LatestInsight from "./components/insights/LatestInsight";
@@ -16,7 +16,7 @@ const Dashboard: React.FC = () => {
         "/insights?page=1&limit=10"
       );
       console.log(response);
-    } catch (error: any) {
+    } catch (error) {
       console.log("Product Error", error);
     }
   };

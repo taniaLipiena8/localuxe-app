@@ -1,7 +1,6 @@
 import React from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Button, SxProps } from "@mui/material";
-import { Box } from "@mui/system";
 
 interface Props {
   onClick: () => void;

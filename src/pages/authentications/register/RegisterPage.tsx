@@ -6,26 +6,23 @@ import {
   Typography,
   Button,
   Link,
+  IconButton,
+  InputAdornment,
+  TextField,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormHelperText,
+  Input,
+  Avatar,
 } from "@mui/material";
-import React from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import CustomerForm from "./components/formFields/CustomerForm";
-import CustomerConfirmPasswordField from "./components/formFields/CustomerConfirmPasswordField";
-import CustomerEmailField from "./components/formFields/CustomerEmailField";
-import CustomerNameField from "./components/formFields/CustomerNameField";
-import CustomerPasswordField from "./components/formFields/CustomerPasswordField";
-import UsernameField from "./components/formFields/UsernameField";
-import EmailField from "./components/formFields/EmailField";
-import PasswordField from "./components/formFields/PasswordField";
-import NamaLengkapField from "./components/formFields/NamaLengkapField";
-import GenderField from "./components/formFields/GenderField";
-import PhoneField from "./components/formFields/PhoneField";
-import ImageField from "./components/formFields/ImageField";
-import { BorderColor } from "@mui/icons-material";
+import React, { useState } from "react";
+import { useForm, FormProvider, Controller } from "react-hook-form";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
+import Field from "../../../components/formField/Field";
+import { MuiTelInput } from "mui-tel-input";
 
 const RegisterPage: React.FC = () => {
-  const form = useForm();
-
   const rootStyle = {
     minHeight: "100vh",
     display: "flex",
@@ -51,6 +48,48 @@ const RegisterPage: React.FC = () => {
     mb: 2,
   };
 
+  const form = useForm();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [preview, setPreview] = useState<any>(null)
+  const [image, setImage] = useState<any>(null)
+  const [imageType, setImageType] = useState<any>(null)
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleOnSubmit = async (value: any) => {
+    const body = {
+      nama_lengkap: value.namaLengkap,
+      nama_pengguna: value.username,
+      email_pengguna: value.email,
+      password_pengguna: value.password,
+      gender: value.gender,
+      nomor_telepon: value.nomorTelepon,
+      gambar_pengguna: image ?? null,
+      tipe_gambar: imageType ?? null
+    }
+    
+    console.log(body);
+  };
+
+  const handleInputFile = (event: HTMLInputElement) => {
+    if (event.files && event.files.length > 0) {
+      const temp = event.files[0];
+      setImageType(temp.type)
+      
+      const test = URL.createObjectURL(temp)
+      console.log(test);
+      setPreview(test)
+      const reader = new FileReader();
+      reader.readAsDataURL(temp);
+
+      reader.onloadend = () => {
+        const base64Data = reader.result;
+        console.log(base64Data);
+        setImage(base64Data?.toString().split(",")[1])
+      };
+    }
+  };
+
   return (
     <Stack sx={rootStyle}>
       <Card sx={cardStyle}>
@@ -61,20 +100,210 @@ const RegisterPage: React.FC = () => {
         </Box>
 
         <FormProvider {...form}>
-          <form>
+          <form onSubmit={form.handleSubmit(handleOnSubmit)}>
             <Stack
               display={"flex"}
               flexDirection={"column"}
               width={"100%"}
               gap={2}
             >
-              <UsernameField />
-              <NamaLengkapField />
-              <EmailField />
-              <PasswordField />
-              <GenderField />
-              <PhoneField />
-              <ImageField />
+              <Controller
+                name="username"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Username"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Username"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="namaLengkap"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Nama Lengkap"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Nama Lengkap"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="email"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Email"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Email"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        type="email"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Password"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        value={value ?? ""}
+                        onChange={onChange}
+                        fullWidth
+                        label="Password"
+                        variant="outlined"
+                        size="small"
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="gender"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Gender"
+                    child={
+                      <>
+                        <RadioGroup row value={value ?? ""} onChange={onChange}>
+                          <FormControlLabel
+                            value="female"
+                            control={<Radio />}
+                            label="Perempuan"
+                          />
+                          <FormControlLabel
+                            value="male"
+                            control={<Radio />}
+                            label="Laki-laki"
+                          />
+                          <FormControlLabel
+                            value="other"
+                            control={<Radio />}
+                            label="Lain-lain"
+                          />
+                        </RadioGroup>
+                        <FormHelperText>{error?.message}</FormHelperText>
+                      </>
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="nomorTelepon"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Nomor Telepon"
+                    child={
+                      <MuiTelInput
+                        defaultCountry="ID"
+                        forceCallingCode
+                        disableFormatting
+                        onChange={onChange}
+                        value={value}
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    }
+                  />
+                )}
+              />
+              <Field
+                title="Photo"
+                child={
+                  <>
+                    <Input
+                      type="file"
+                      inputProps={{
+                        accept: "image/png, image/jpg, image/jpeg",
+                      }}
+                      onChange={(e) => {
+                        handleInputFile(e.target as HTMLInputElement);
+                      }}
+                      
+                    />
+                  </>
+                }
+              />
+              <Avatar src={preview} sx={{ width: 80, height:"auto"}} />
             </Stack>
             <Button
               type="submit"
