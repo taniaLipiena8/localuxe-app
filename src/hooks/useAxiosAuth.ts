@@ -2,19 +2,17 @@ import { useContext, useEffect } from "react";
 import useRefreshAuth from "./useRefreshAuth";
 import AuthContext from "../context/AuthProvider";
 import axiosAuth from "../services/AxiosAuth";
-import { jwtDecode } from "jwt-decode";
 
 const useAxiosAuth = () => {
   const refreshAuth = useRefreshAuth();
-  const { token, exp, setExp } = useContext(AuthContext);
-  console.log("token dari useaxios", token);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     const requestIntercept = axiosAuth.interceptors.request.use(
       async (config) => {
         if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${token}`;
-        } 
+        }
 
         return config;
       },

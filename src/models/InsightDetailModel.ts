@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-class InsightListPack {
+class InsightDetailPack {
   message!: string;
   status!: number;
-  data!: InsightListData;
+  data!: InsightDetailData;
 
   constructor(json: any) {
     this.mapFromJson(json);
@@ -11,33 +11,11 @@ class InsightListPack {
   mapFromJson(json: any) {
     this.message = json.message;
     this.status = json.status;
-    this.data = new InsightListData(json.data);
+    this.data = new InsightDetailData(json.data.insight);
   }
 }
 
-class InsightListData {
-  insights!: InsightListRecord[];
-  totalPage!: number;
-
-  constructor(json: any) {
-    this.mapFromJson(json);
-  }
-
-  mapFromJson(json: any) {
-    const temp: InsightListRecord[] = [];
-
-    if (json["insights"] !== null) {
-      for (let i = 0; i < json.insights.length; i++) {
-        temp.push(new InsightListRecord(json.insights[i]));
-      }
-    }
-
-    this.insights = temp;
-    this.totalPage = json["total_page"];
-  }
-}
-
-class InsightListRecord {
+class InsightDetailData {
   id!: number;
   gambar!: string;
   judul!: string;
@@ -51,12 +29,14 @@ class InsightListRecord {
   constructor(json: any) {
     this.mapFromJson(json);
   }
-
+  //   string.split('\n').map((item, index) => {
+  //     return (index === 0) ? item : [<br key={index} />, item]
+  //   }
   mapFromJson(json: any) {
     this.id = json["id"];
     this.gambar = json["gambar"];
     this.judul = json["judul"];
-    this.konten = json["konten"];
+    this.konten = json["konten"]
     this.link = json["link"];
     this.namaPenulis = json["nama_penulis"];
     this.ringkasanKonten = json["ringkasan_konten"];
@@ -69,8 +49,7 @@ class InsightListRecord {
       .replace(/ /g, "-")} at ${new Date(
       json["tanggal_pembuatan"]
     ).toLocaleTimeString("it-IT")}`;
-    this.views = json["views"];
   }
 }
 
-export { InsightListPack, InsightListData, InsightListRecord };
+export { InsightDetailPack, InsightDetailData };

@@ -50,7 +50,8 @@ const LoginPage: React.FC = () => {
   const form = useForm();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { setExp, setToken } = useContext(AuthContext);
+  const { setExp, setToken, setRefreshToken, setAuth } =
+    useContext(AuthContext);
 
   // ============================================== Functions =================================================
 
@@ -63,11 +64,16 @@ const LoginPage: React.FC = () => {
       const response = await axiosClient.post("/login", body, {
         withCredentials: true,
       });
-
+      setAuth("Logged in");
       setToken(response.data.data.access_token);
+      setRefreshToken(response.data.data.refresh_token);
       const decoded = jwtDecode(response.data.data.access_token);
       console.log("hasil decode", decoded);
       setExp(decoded.exp!);
+
+      localStorage.setItem("auth", "Logged in");
+      localStorage.setItem("refreshToken", response.data.data.refresh_token);
+      localStorage.setItem("exp", String(decoded.exp!));
 
       navigate("/");
     } catch (error: any) {

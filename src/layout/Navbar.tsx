@@ -1,10 +1,35 @@
-import { Box, Container, Link, Typography} from "@mui/material";
-import React from "react";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import React, { useContext, useState } from "react";
 import VisitorButtons from "./components/VisitorButtons";
-import useAxiosAuth from "../hooks/useAxiosAuth";
+import LoggedUserButtons from "./components/LoggedUserButtons";
+import AuthContext from "../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
-  
+  const { auth } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [openGame, setOpenGame] = useState(false);
+  const [openPoin, setOpenPoin] = useState(false);
+
+  const handleClickPrivatePage = (url: string) => {
+    if (!auth) {
+      switch (url) {
+        case "game":
+          setOpenGame(true);
+          break;
+        case "tukar-poin":
+          setOpenPoin(true);
+          break;
+      }
+    } else navigate(`/${url}`);
+  };
 
   return (
     <Box bgcolor="#F8DAD9" sx={{ position: "sticky", top: 0, zIndex: 1022 }}>
@@ -27,61 +52,80 @@ const Navbar: React.FC = () => {
             </Link>
           </Box>
           <Box display={"flex"} gap={7} justifyContent={"center"} paddingX={7}>
-            <Link href="/insights" underline="none">
-              <Typography
-                color={"#674342"}
+            <Button
+              variant="text"
+              onClick={() => navigate("/insights")}
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  textDecoration: "underline ",
+                },
+                color: "#674342",
+                fontSize: "16px",
+              }}
+            >
+              INSIGHTS
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => navigate("/brands")}
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  textDecoration: "underline ",
+                },
+                color: "#674342",
+                fontSize: "16px",
+              }}
+            >
+              BRANDS
+            </Button>
+            <Tooltip
+              arrow
+              open={openGame}
+              onClose={() => setOpenGame(false)}
+              title="Mohon login terlebih dahulu"
+            >
+              <Button
+                variant="text"
+                onClick={() => handleClickPrivatePage("game")}
                 sx={{
                   cursor: "pointer",
                   "&:hover": {
                     textDecoration: "underline ",
                   },
-                }}
-              >
-                INSIGHTS
-              </Typography>
-            </Link>
-            <Link href="/brands" underline="none">
-              <Typography
-                color={"#674342"}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    textDecoration: "underline ",
-                  },
-                }}
-              >
-                BRANDS
-              </Typography>
-            </Link>
-            <Link href="/game" underline="none">
-              <Typography
-                color={"#674342"}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    textDecoration: "underline ",
-                  },
+                  color: "#674342",
+                  fontSize: "16px",
                 }}
               >
                 GAME
-              </Typography>
-            </Link>
-            <Link href="/tukar-poin" underline="none">
-              <Typography
-                color={"#674342"}
+              </Button>
+            </Tooltip>
+
+            <Tooltip
+              arrow
+              open={openPoin}
+              onClose={() => setOpenPoin(false)}
+              title="Mohon login terlebih dahulu"
+            >
+              <Button
+                variant="text"
+                onClick={() => handleClickPrivatePage("tukar-poin")}
                 sx={{
                   cursor: "pointer",
                   "&:hover": {
                     textDecoration: "underline ",
                   },
+                  color: "#674342",
+                  fontSize: "16px",
                 }}
               >
                 TUKAR POIN
-              </Typography>
-            </Link>
+              </Button>
+            </Tooltip>
           </Box>
           <Box display={"flex"} alignItems={"center"} paddingLeft={6}>
-            <VisitorButtons />
+            {!auth ? <VisitorButtons /> : <LoggedUserButtons />}
           </Box>
         </Box>
       </Container>

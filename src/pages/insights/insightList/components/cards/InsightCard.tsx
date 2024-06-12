@@ -1,15 +1,24 @@
 import { Card, Stack, CardMedia, CardContent, Typography, CardActionArea } from "@mui/material";
 import React from "react";
-import { InsightListRecord } from "../../../../models/InsightListModel";
+import { InsightListRecord } from "../../../../../models/InsightListModel";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   insight: InsightListRecord | null;
 }
 
 const InsightCard: React.FC<Props> = ({ insight }) => {
+  const navigate = useNavigate();
+
+  function handleClickCard() {
+    navigate({
+      pathname: "/insights/" + insight!.id,
+    });
+  }
+
   return (
     <Card sx={{ display: "flex", width: "100%" }}>
-      <CardActionArea sx={{display:"flex", flexDirection:"row"}}>
+      <CardActionArea sx={{display:"flex", flexDirection:"row"}} onClick={handleClickCard}>
         <Stack width={180} padding={2} sx={{ justifyContent: "center" }}>
           <CardMedia
             component="img"

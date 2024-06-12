@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
             <CarouselDashboard />
           </Box>
         </Stack>
-        <Stack>
+        <Stack width={"100%"}>
           <BrandsDashboard />
         </Stack>
         <Stack

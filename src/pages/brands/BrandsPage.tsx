@@ -1,366 +1,246 @@
-import { AxiosResponse } from "axios";
-import React, { useEffect, useState } from "react";
-import axiosClient from "../../services/AxiosClient";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Grid, Popover, Stack, Typography } from "@mui/material";
+import useGetBrandsList, {
+  AdjustedBrandList,
+} from "./services/useGetBrandsList";
+import { BrandRecord } from "../../models/BrandsModel";
+import useGetDetailBrand from "./services/useGetDetailBrand";
+import { SocialMediaData } from "../../models/BrandDetailModel";
+import SocialMediaPerBrand from "./components/SocialMediaPerBrand";
+import BrandStory from "./components/BrandStory";
 
 const BrandsPage = () => {
-  const [brandList, setBrandList] = useState<any>([]);
-  const [detail, setDetail] = useState<any>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [brandId, setBrandId] = useState<number | null>(null);
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const {
+    adjustedBrandList,
+    loading: loadingList,
+    errorMessage: errorList,
+  } = useGetBrandsList();
+
+  const {
+    detailBrandData,
+    loading: loadingDetail,
+    errorMessage: errorDetail,
+  } = useGetDetailBrand({ brandId: brandId });
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: any) => {
     setAnchorEl(event.currentTarget);
-    getDetail(id)
+    setBrandId(id);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setDetail(null)
+    setBrandId(null);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-  const getInsight = async () => {
-    try {
-      const response: AxiosResponse = await axiosClient.get("/brands");
-      let data = response.data.data.brands.reduce((r, e) => {
-        // get first letter of name of current element
-        let group = e.nama_merek[0];
-        // if there is no property in accumulator with this letter create it
-        if (!r[group]) {
-          r[group] = { group, children: [e] };
-        }
-        // if there is push current element to children array for that letter
-        else r[group].children.push(e);
-        // return accumulator
-        return r;
-      }, {});
-      setBrandList(data);
-
-    } catch (error) {
-      console.log("Product Error", error);
-    }
-  };
-
-  const getDetail = async (id:any) => {
-    try {
-      const response: AxiosResponse = await axiosClient.get(`/brands/${id}`);
-      console.log("ini detail" , response);setDetail(response.data.data.brandDetail)
-      
-    } catch (error) {
-      console.log("Product Error", error);
-    }
-  };
-  useEffect(() => {
-    getInsight();
-  }, []);
   return (
-    <Stack paddingX={30}>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <Typography sx={{ p: 2 }}>{detail?.nama_merek ?? ""}</Typography>
-      </Popover>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={3} textAlign={"left"}>
-          {brandList["A"] && (
-            <>
-              <Box marginBottom={1} borderBottom={"1px solid black"}>
-                A
-              </Box>
-              {brandList["A"].children.map((test) => {
-                return (
-                  <Stack alignItems={"start"}>
-                    <Button
-                      onClick={(e)=>handleClick(e, test.merek_id)}
-                      sx={{ padding: 0, textAlign: "left", minWidth: 0 }}
-                      variant="text"
-                    >
-                      {test.nama_merek}
-                    </Button>
-                  </Stack>
-                );
-              })}
-            </>
-          )}
-          {brandList["B"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                B
-              </Box>
-              {brandList["B"].children.map((test) => {
-                return (
-                  <Stack alignItems={"start"}>
-                    <Button
-                      sx={{ padding: 0, textAlign: "left", minWidth: 0 }}
-                      variant="text"
-                    >
-                      {test.nama_merek}
-                    </Button>
-                  </Stack>
-                );
-              })}
-            </>
-          )}
-          {brandList["C"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                C
-              </Box>
-              {brandList["C"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["D"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                D
-              </Box>
-              {brandList["D"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["E"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                E
-              </Box>
-              {brandList["E"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["F"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                F
-              </Box>
-              {brandList["F"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["G"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                G
-              </Box>
-              {brandList["G"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["H"] && (
-            <>
-              <Box marginBottom={1} borderBottom={"1px solid black"}>
-                H
-              </Box>
-              {brandList["H"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["I"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                I
-              </Box>
-              {brandList["I"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["J"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                J
-              </Box>
-              {brandList["J"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-        </Grid>
-        <Grid item xs={3} textAlign={"left"}>
-          {brandList["K"] && (
-            <>
-              <Box marginBottom={1} borderBottom={"1px solid black"}>
-                K
-              </Box>
-              {brandList["K"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["L"] && (
-            <>
-              <Box marginBottom={1} borderBottom={"1px solid black"}>
-                L
-              </Box>
-              {brandList["L"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["M"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                M
-              </Box>
-              {brandList["M"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["N"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                N
-              </Box>
-              {brandList["N"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["O"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                O
-              </Box>
-              {brandList["O"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["P"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                P
-              </Box>
-              {brandList["P"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-        </Grid>
+    adjustedBrandList.length > 0 && (
+      <Stack paddingX={30}>
+        <Stack width={"100%"} justifyContent={"center"} marginTop={2}>
+          <Typography fontSize={24} fontWeight={700} color={"#674342"}>
+            BRAND LIST
+          </Typography>
+        </Stack>
+        <Stack width={"100%"} justifyContent={"center"} marginBottom={4}>
+          <Typography fontSize={16} color={"#964A52"}>
+            Discover new local brands and support the community starting from
+            here!!
+          </Typography>
+        </Stack>
 
-        <Grid item xs={3} textAlign={"left"}>
-          {brandList["Q"] && (
-            <>
-              <Box marginBottom={1} borderBottom={"1px solid black"}>
-                Q
-              </Box>
-              {brandList["Q"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
+        {/* ini buat nambah onclick scroll but its just nice to have not rlly necessary rn */}
+        {/* <Stack width={"100%"} justifyContent={"center"} marginBottom={4}>
+          {adjustedB}
+        </Stack> */}
+
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          {detailBrandData && (
+            <Stack
+              flexDirection={"column"}
+              sx={{
+                p: 2,
+                minWidth:
+                  detailBrandData.mediaSocial.length > 2 ? "650px" : "300px",
+                maxWidth: "700px",
+              }}
+            >
+              <BrandStory detailBrand={detailBrandData} />
+              <Grid container rowSpacing={1} columnSpacing={{ xs: 0.5 }}>
+                <Grid
+                  item
+                  xs={detailBrandData.mediaSocial.length > 2 ? 4 : 12}
+                  textAlign={"left"}
+                >
+                  {detailBrandData.mediaSocial
+                    .filter((_: any, index: number) => index < 2)
+                    .map((socmed: SocialMediaData, idx: number) => (
+                      <SocialMediaPerBrand socialMediaData={socmed} key={idx} />
+                    ))}
+                </Grid>
+                <Grid item xs={4} textAlign={"left"}>
+                  {detailBrandData.mediaSocial
+                    .filter((_: any, index: number) => index > 1 && index < 4)
+                    .map((socmed: SocialMediaData) => (
+                      <SocialMediaPerBrand socialMediaData={socmed} />
+                    ))}
+                </Grid>
+                <Grid item xs={4} textAlign={"left"}>
+                  {detailBrandData.mediaSocial
+                    .filter((_: any, index: number) => index > 3 && index < 6)
+                    .map((socmed: SocialMediaData) => (
+                      <SocialMediaPerBrand socialMediaData={socmed} />
+                    ))}
+                </Grid>
+              </Grid>
+            </Stack>
           )}
-          {brandList["R"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                R
-              </Box>
-              {brandList["R"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["S"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                S
-              </Box>
-              {brandList["S"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
+        </Popover>
+
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={3} textAlign={"left"}>
+            {adjustedBrandList
+              .filter((_: any, index: number) => index < 7)
+              .map((filteredObj: AdjustedBrandList, idx: number) => (
+                <Box key={idx} marginBottom={2}>
+                  <Box marginBottom={1} borderBottom={"1px solid #674342"}>
+                    <Typography color={"#964A52"} fontSize={18}>
+                      {filteredObj.group}
+                    </Typography>
+                  </Box>
+                  {filteredObj.children.map(
+                    (brand: BrandRecord, brandIdx: number) => (
+                      <Stack alignItems={"start"} key={brandIdx}>
+                        <Button
+                          onClick={(e) => handleClick(e, brand.merekId)}
+                          sx={{
+                            padding: 0,
+                            textAlign: "left",
+                            minWidth: 0,
+                            color: "#964A52",
+                          }}
+                          variant="text"
+                        >
+                          {brand.namaMerek}
+                        </Button>
+                      </Stack>
+                    )
+                  )}
+                </Box>
+              ))}
+          </Grid>
+          <Grid item xs={3} textAlign={"left"}>
+            {adjustedBrandList
+              .filter((_: any, index: number) => index > 6 && index < 14)
+              .map((filteredObj: AdjustedBrandList, idx: number) => (
+                <Box key={idx} marginBottom={2}>
+                  <Box marginBottom={1} borderBottom={"1px solid #674342"}>
+                    <Typography color={"#964A52"} fontSize={18}>
+                      {filteredObj.group}
+                    </Typography>
+                  </Box>
+                  {filteredObj.children.map(
+                    (brand: BrandRecord, brandIdx: number) => (
+                      <Stack alignItems={"start"} key={brandIdx}>
+                        <Button
+                          onClick={(e) => handleClick(e, brand.merekId)}
+                          sx={{
+                            padding: 0,
+                            textAlign: "left",
+                            minWidth: 0,
+                            color: "#964A52",
+                          }}
+                          variant="text"
+                        >
+                          {brand.namaMerek}
+                        </Button>
+                      </Stack>
+                    )
+                  )}
+                </Box>
+              ))}
+          </Grid>
+          <Grid item xs={3} textAlign={"left"}>
+            {adjustedBrandList
+              .filter((_: any, index: number) => index > 13 && index < 19)
+              .map((filteredObj: AdjustedBrandList, idx: number) => (
+                <Box key={idx} marginBottom={2}>
+                  <Box marginBottom={1} borderBottom={"1px solid #674342"}>
+                    <Typography color={"#964A52"} fontSize={18}>
+                      {filteredObj.group}
+                    </Typography>
+                  </Box>
+                  {filteredObj.children.map(
+                    (brand: BrandRecord, brandIdx: number) => (
+                      <Stack alignItems={"start"} key={brandIdx}>
+                        <Button
+                          onClick={(e) => handleClick(e, brand.merekId)}
+                          sx={{
+                            padding: 0,
+                            textAlign: "left",
+                            minWidth: 0,
+                            color: "#964A52",
+                          }}
+                          variant="text"
+                        >
+                          {brand.namaMerek}
+                        </Button>
+                      </Stack>
+                    )
+                  )}
+                </Box>
+              ))}
+          </Grid>
+          <Grid item xs={3} textAlign={"left"}>
+            {adjustedBrandList
+              .filter((_: any, index: number) => index > 18 && index < 26)
+              .map((filteredObj: AdjustedBrandList, idx: number) => (
+                <Box key={idx} marginBottom={2}>
+                  <Box marginBottom={1} borderBottom={"1px solid #674342"}>
+                    <Typography color={"#964A52"} fontSize={18}>
+                      {filteredObj.group}
+                    </Typography>
+                  </Box>
+                  {filteredObj.children.map(
+                    (brand: BrandRecord, brandIdx: number) => (
+                      <Stack alignItems={"start"} key={brandIdx}>
+                        <Button
+                          onClick={(e) => handleClick(e, brand.merekId)}
+                          sx={{
+                            padding: 0,
+                            textAlign: "left",
+                            minWidth: 0,
+                            color: "#964A52",
+                          }}
+                          variant="text"
+                        >
+                          {brand.namaMerek}
+                        </Button>
+                      </Stack>
+                    )
+                  )}
+                </Box>
+              ))}
+          </Grid>
         </Grid>
-        <Grid item xs={3} textAlign={"left"}>
-          {brandList["T"] && (
-            <>
-              <Box marginBottom={1} borderBottom={"1px solid black"}>
-                T
-              </Box>
-              {brandList["T"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["U"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                U
-              </Box>
-              {brandList["U"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["V"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                V
-              </Box>
-              {brandList["V"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["W"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                W
-              </Box>
-              {brandList["W"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["X"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                X
-              </Box>
-              {brandList["X"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["Y"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                Y
-              </Box>
-              {brandList["Y"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-          {brandList["Z"] && (
-            <>
-              <Box marginY={1} borderBottom={"1px solid black"}>
-                Z
-              </Box>
-              {brandList["Z"].children.map((test) => {
-                return <Box>{test.nama_merek}</Box>;
-              })}
-            </>
-          )}
-        </Grid>
-      </Grid>
-    </Stack>
+      </Stack>
+    )
   );
 };
 
