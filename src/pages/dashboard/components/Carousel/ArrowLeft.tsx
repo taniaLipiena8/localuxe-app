@@ -12,7 +12,7 @@ const ArrowLeft: React.FC<Props> = ({onClick}) => {
     transform: "translate(0, -50%)",
     left: "32px",
     fontSize: "45px",
-    color: "white",
+    color: "#674342",
     zIndex: 1,
     cursor: "pointer",
   };

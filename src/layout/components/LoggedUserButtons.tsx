@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext } from "react";
 import useGetUserData from "../../services/useGetUserData";
 import { Avatar, Box, Button, IconButton, useTheme } from "@mui/material";
 import AuthContext from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import useAxiosAuth from "../../hooks/useAxiosAuth";
 
 const LoggedUserButtons = () => {
   const { setExp, setToken, setRefreshToken, setAuth } =
@@ -10,16 +13,23 @@ const LoggedUserButtons = () => {
   const { userData } = useGetUserData();
   const theme = useTheme();
   const navigate = useNavigate();
+  const axiosAuth = useAxiosAuth();
 
   const handleLogout = async () => {
-    setExp(null);
-    setToken(null);
-    setAuth(null);
-    setRefreshToken(null);
-
-    localStorage.removeItem("auth");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("exp");
+    try {
+      await axiosAuth.delete("/logout");
+      setExp(null);
+      setToken(null);
+      setAuth(null);
+      setRefreshToken(null);
+      localStorage.removeItem("userId");
+      localStorage.removeItem("auth");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("exp");
+      navigate("/");
+    } catch (error: any) {
+      toast.error(`Error Logout : ${error.toString()}`);
+    }
   };
 
   return (
@@ -33,10 +43,10 @@ const LoggedUserButtons = () => {
       gap={3}
     >
       <IconButton
-      onClick={()=>navigate("/account")}
+        onClick={() => navigate("/account")}
         sx={{
           height: "36px",
-          width:"fit-content"
+          width: "fit-content",
         }}
       >
         <Avatar src={userData?.gambarProfile} />

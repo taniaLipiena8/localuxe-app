@@ -37,7 +37,7 @@ class BrandDetailData {
     this.merekId = json["merek_id"];
     this.namaMerek = json["nama_merek"];
     this.logoMerek = json["logo_merek"];
-    this.deskripsiMerek = json["deskripsi_merek"];
+    this.deskripsiMerek = json["deskripsi"];
     this.mediaSocial = temp;
   }
 }

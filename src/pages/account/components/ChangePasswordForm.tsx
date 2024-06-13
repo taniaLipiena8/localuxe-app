@@ -35,7 +35,7 @@ const ChangePasswordForm: React.FC = () => {
         confirmation_password: value.confirmPassword,
       };
 
-      const response = await axiosAuth.put("/user_password", body);
+      await axiosAuth.put("/user_password", body);
       toast.success("Sukses mengganti password.");
       getUserData();
       window.location.reload();

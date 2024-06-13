@@ -28,7 +28,7 @@ const ProfileForm: React.FC = () => {
     nomorTelepon: null,
   };
   const [currData, setCurrData] = useState<any>(initValue);
-  const { userData, getUserData } = useGetUserData();
+  const { userData } = useGetUserData();
   const [preview, setPreview] = useState<any>(null);
   const axiosAuth = useAxiosAuth();
 
@@ -42,7 +42,7 @@ const ProfileForm: React.FC = () => {
         gambar_pengguna: currData.gambarProfile,
       };
 
-      const response = await axiosAuth.put("/user_profile", body);
+      await axiosAuth.put("/user_profile", body);
       toast.success("Sukses mengganti data profile");
 
       window.location.reload();
@@ -70,7 +70,6 @@ const ProfileForm: React.FC = () => {
   const handleInputFile = (event: HTMLInputElement) => {
     if (event.files && event.files.length > 0) {
       const temp = event.files[0];
-      handleChangeProfileValue("gambarProfile", temp);
 
       const url = URL.createObjectURL(temp);
       console.log(url);

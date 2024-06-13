@@ -15,20 +15,22 @@ const BrandStory: React.FC<Props> = ({ detailBrand }) => {
           {detailBrand.namaMerek.toUpperCase()}
         </Typography>
       </Stack>
-      <Typography
-        color={"#674342"}
-        fontSize={16}
-        sx={{ whiteSpace: "pre-wrap" }}
-      >
-        {detailBrand.deskripsiMerek.split("\\n").map(function (item, idx) {
-          return (
-            <span key={idx}>
-              {item}
-              <br />
-            </span>
-          );
-        })}
-      </Typography>
+      {detailBrand.deskripsiMerek && (
+        <Typography
+          color={"#674342"}
+          fontSize={16}
+          sx={{ whiteSpace: "pre-wrap" }}
+        >
+          {detailBrand.deskripsiMerek.split("\\n").map(function (item, idx) {
+            return (
+              <span key={idx}>
+                {item}
+                <br />
+              </span>
+            );
+          })}
+        </Typography>
+      )}
     </Stack>
   );
 };

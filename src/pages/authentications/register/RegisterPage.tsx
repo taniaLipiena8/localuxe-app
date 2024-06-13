@@ -17,11 +17,15 @@ import {
   Input,
   Avatar,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import Field from "../../../components/formField/Field";
 import { MuiTelInput } from "mui-tel-input";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../../context/AuthProvider";
+import axiosClient from "../../../services/AxiosClient";
+import toast, { Toaster } from "react-hot-toast";
 
 const RegisterPage: React.FC = () => {
   const rootStyle = {
@@ -49,12 +53,23 @@ const RegisterPage: React.FC = () => {
     mb: 2,
   };
 
-  const form = useForm();
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [preview, setPreview] = useState<any>(null)
-  const [image, setImage] = useState<any>(null)
-  const [imageType, setImageType] = useState<any>(null)
+  // ========================================= Hooks and States =============================================
 
+  const form = useForm();
+  const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [preview, setPreview] = useState<any>(null);
+  const [image, setImage] = useState<any>(null);
+
+  // ============================================== useEffects =================================================
+  useEffect(() => {
+    if (auth) {
+      navigate("/");
+    }
+  }, [auth]);
+
+  // ============================================== Functions =================================================
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleOnSubmit = async (value: any) => {
@@ -65,28 +80,30 @@ const RegisterPage: React.FC = () => {
       password_pengguna: value.password,
       gender: value.gender,
       nomor_telepon: value.nomorTelepon,
-      gambar_pengguna: image ?? null,
-      tipe_gambar: imageType ?? null
+      gambar_pengguna: image,
+    };
+    try {
+      await axiosClient.post("/register", body, {
+        withCredentials: true,
+      });
+      navigate("/");
+    } catch (error: any) {
+      toast.error(`Register Error: ${error.toString()}`);
     }
-    
-    console.log(body);
   };
 
   const handleInputFile = (event: HTMLInputElement) => {
     if (event.files && event.files.length > 0) {
       const temp = event.files[0];
-      setImageType(temp.type)
-      
-      const test = URL.createObjectURL(temp)
-      console.log(test);
-      setPreview(test)
+
+      const url = URL.createObjectURL(temp);
+      setPreview(url);
       const reader = new FileReader();
       reader.readAsDataURL(temp);
 
       reader.onloadend = () => {
         const base64Data = reader.result;
-        console.log(base64Data);
-        setImage(base64Data?.toString().split(",")[1])
+        setImage(base64Data?.toString().split(",")[1]);
       };
     }
   };
@@ -299,12 +316,11 @@ const RegisterPage: React.FC = () => {
                       onChange={(e) => {
                         handleInputFile(e.target as HTMLInputElement);
                       }}
-                      
                     />
                   </>
                 }
               />
-              <Avatar src={preview} sx={{ width: 80, height:"auto"}} />
+              <Avatar src={preview} sx={{ width: 80, height: "auto" }} />
             </Stack>
             <Button
               type="submit"
@@ -322,7 +338,12 @@ const RegisterPage: React.FC = () => {
             flexDirection: "row",
           }}
         >
-          <Typography fontSize={14} fontWeight={400} color={"#674342"}>
+          <Typography
+            fontSize={14}
+            fontWeight={400}
+            color={"#674342"}
+            marginRight={1}
+          >
             Sudah memiliki akun?
           </Typography>
           <Link href="/login" color="inherit" underline="always">
@@ -330,6 +351,7 @@ const RegisterPage: React.FC = () => {
           </Link>
         </Stack>
       </Card>
+      <Toaster />
     </Stack>
   );
 };

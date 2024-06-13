@@ -16,6 +16,8 @@ import AuthContext from "./context/AuthProvider";
 import InsightDetailPage from "./pages/insights/insightDetail/InsightDetailPage";
 import AccountPage from "./pages/account/AccountPage";
 import { PrivateRoute } from "./PrivatePage";
+import TukarPoinPage from "./pages/tukarPoin/TukarPoinPage";
+import GamePage from "./pages/game/GamePage";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -31,7 +33,7 @@ function App() {
         navigate("/");
       }
     }
-  }, []);
+  }, [auth]);
 
   return (
     <Routes>
@@ -47,6 +49,22 @@ function App() {
           element={
             <PrivateRoute>
               <AccountPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="tukar-poin"
+          element={
+            <PrivateRoute>
+              <TukarPoinPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="game"
+          element={
+            <PrivateRoute>
+              <GamePage />
             </PrivateRoute>
           }
         />

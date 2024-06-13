@@ -4,7 +4,6 @@ import {
   Container,
   Link,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import VisitorButtons from "./components/VisitorButtons";
@@ -41,14 +40,21 @@ const Navbar: React.FC = () => {
           justifyContent={"center"}
         >
           <Box paddingRight={6}>
-            <Link href="/" underline="none">
-              <Typography
-                color={"#674342"}
-                sx={{ cursor: "pointer" }}
-                fontSize={"30px"}
-              >
-                LOCALUXE
-              </Typography>
+            <Link
+              href="/"
+              underline="none"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                height={"40px"}
+                width="auto"
+                style={{ objectFit: "cover" }}
+                src="LocaluxeNavbar_1.png"
+              />
             </Link>
           </Box>
           <Box display={"flex"} gap={7} justifyContent={"center"} paddingX={7}>

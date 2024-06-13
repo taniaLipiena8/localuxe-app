@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import Field from "../../../components/formField/Field";
 import toast, { Toaster } from "react-hot-toast";
@@ -50,8 +50,15 @@ const LoginPage: React.FC = () => {
   const form = useForm();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { setExp, setToken, setRefreshToken, setAuth } =
+  const { setExp, setToken, setRefreshToken, setAuth, auth } =
     useContext(AuthContext);
+
+  // ============================================== useEffects =================================================
+  useEffect(() => {
+    if (auth) {
+      navigate("/");
+    }
+  }, [auth]);
 
   // ============================================== Functions =================================================
 
@@ -67,10 +74,10 @@ const LoginPage: React.FC = () => {
       setAuth("Logged in");
       setToken(response.data.data.access_token);
       setRefreshToken(response.data.data.refresh_token);
-      const decoded = jwtDecode(response.data.data.access_token);
-      console.log("hasil decode", decoded);
+      const decoded = jwtDecode(response.data.data.access_token) as any;
       setExp(decoded.exp!);
 
+      localStorage.setItem("userId", String(decoded.id!));
       localStorage.setItem("auth", "Logged in");
       localStorage.setItem("refreshToken", response.data.data.refresh_token);
       localStorage.setItem("exp", String(decoded.exp!));
@@ -187,7 +194,7 @@ const LoginPage: React.FC = () => {
             flexDirection: "row",
           }}
         >
-          <Typography fontSize={14} fontWeight={400} color={"#674342"}>
+          <Typography fontSize={14} fontWeight={400} color={"#674342"} marginRight={1}>
             Belum memiliki akun?
           </Typography>
           <Link href="/register" color="inherit" underline="always">

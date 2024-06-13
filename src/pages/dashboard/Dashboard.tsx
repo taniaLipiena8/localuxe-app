@@ -28,7 +28,12 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Stack sx={{ alignItems: "center" }} paddingX={30}>
-        <Stack width={"100%"} spacing={4} alignItems="center" paddingX={30}>
+        <Stack
+          width={"100%"}
+          spacing={4}
+          alignItems="center"
+          paddingX={30}
+        >
           <Box
             sx={{
               width: "100%",
@@ -40,12 +45,12 @@ const Dashboard: React.FC = () => {
             <CarouselDashboard />
           </Box>
         </Stack>
-        <Stack width={"100%"}>
+        <Stack width={"100%"} marginTop={5}>
           <BrandsDashboard />
         </Stack>
         <Stack
           marginTop={10}
-          bgcolor={"#F8DAD9"}
+          bgcolor={"#fcf3f2"}
           width={"100%"}
           direction={"row"}
           paddingX={30}
@@ -62,7 +67,7 @@ const Dashboard: React.FC = () => {
             <MostViewedInsights />
           </Stack>
         </Stack>
-        <Stack marginTop={5} paddingX={15}>
+        <Stack marginTop={5} >
           <AboutLocaluxe />
         </Stack>
       </Stack>
