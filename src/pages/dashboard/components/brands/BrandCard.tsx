@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
@@ -30,8 +31,6 @@ const BrandCard: React.FC<Props> = ({ brand }) => {
 
   const {
     detailBrandData,
-    loading: loadingDetail,
-    errorMessage: errorDetail,
   } = useGetDetailBrand({ brandId: brandId });
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: any) => {

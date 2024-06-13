@@ -15,7 +15,7 @@ const AccountPage: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
   ) => {
     setSelectedIndex(index);
@@ -91,7 +91,7 @@ const AccountPage: React.FC = () => {
 
           {selectedIndex === 0 && <ProfileForm />}
           {selectedIndex === 1 && (
-            <ChangePasswordForm changeIndex={() => setSelectedIndex(0)} />
+            <ChangePasswordForm  />
           )}
         </Stack>
       </Stack>

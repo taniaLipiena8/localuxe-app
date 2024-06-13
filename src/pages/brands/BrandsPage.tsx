@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Box, Button, Grid, Popover, Stack, Typography } from "@mui/material";
 import useGetBrandsList, {
   AdjustedBrandList,
@@ -19,17 +19,9 @@ const BrandsPage = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const {
-    adjustedBrandList,
-    loading: loadingList,
-    errorMessage: errorList,
-  } = useGetBrandsList();
+  const { adjustedBrandList } = useGetBrandsList();
 
-  const {
-    detailBrandData,
-    loading: loadingDetail,
-    errorMessage: errorDetail,
-  } = useGetDetailBrand({ brandId: brandId });
+  const { detailBrandData } = useGetDetailBrand({ brandId: brandId });
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: any) => {
     setAnchorEl(event.currentTarget);
