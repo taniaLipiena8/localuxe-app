@@ -60,7 +60,11 @@ const BrandsPage = () => {
           onClose={handleClose}
           anchorOrigin={{
             vertical: "bottom",
-            horizontal: "left",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
           }}
         >
           {detailBrandData && (

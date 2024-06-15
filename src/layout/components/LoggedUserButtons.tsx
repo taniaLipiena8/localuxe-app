@@ -1,7 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import useGetUserData from "../../services/useGetUserData";
-import { Avatar, Box, Button, IconButton, useTheme } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import AuthContext from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -15,6 +27,8 @@ const LoggedUserButtons = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const axiosAuth = useAxiosAuth();
+
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
 
   const redirect = debounce(() => {
     setExp(null);
@@ -37,6 +51,8 @@ const LoggedUserButtons = () => {
       redirect();
     } catch (error: any) {
       toast.error(`Error Logout : ${error.toString()}`);
+    } finally {
+      setOpenConfirm(false);
     }
   };
 
@@ -62,7 +78,7 @@ const LoggedUserButtons = () => {
       <Button
         fullWidth
         variant="contained"
-        onClick={handleLogout}
+        onClick={() => setOpenConfirm(true)}
         sx={{
           height: "36px",
           backgroundColor: theme.palette.background.default,
@@ -77,6 +93,33 @@ const LoggedUserButtons = () => {
       >
         LOG OUT
       </Button>
+
+      <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
+        <DialogTitle color={"#674342"} fontWeight={700}>
+          Apakah anda yakin ingin Logout?
+        </DialogTitle>
+        <DialogContent>
+          <DialogActions>
+            <Stack width={"100%"} gap={2} flexDirection={"row"} >
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={() => setOpenConfirm(false)}
+              >
+                Tidak
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={handleLogout}
+                sx={{ color: "white" }}
+              >
+                Iya
+              </Button>
+            </Stack>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
 
       <Toaster />
     </Box>

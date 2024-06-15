@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { VoucherListRecord } from "../models/VoucherModel";
 import toast, { Toaster } from "react-hot-toast";
 import useAxiosAuth from "../../../hooks/useAxiosAuth";
@@ -15,6 +15,7 @@ import DialogCard from "./DialogCard";
 import VoucherContext from "../context/VoucherContext";
 import ClaimedVoucherContext from "../context/ClaimedVoucherContext";
 import { debounce } from "lodash";
+import DialogConfirm from "./DialogConfirm";
 
 interface Props {
   voucherDetailId?: number;
@@ -31,7 +32,8 @@ const VoucherCard: React.FC<Props> = ({
   const { value, getPoint } = useContext(VoucherContext);
   const { getClaimedVouchers } = useContext(ClaimedVoucherContext);
 
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
 
   const getVoucher = debounce(() => {
     getClaimedVouchers();
@@ -51,6 +53,7 @@ const VoucherCard: React.FC<Props> = ({
       console.log("Klaim Error", error);
     } finally {
       getPoint();
+      setOpenConfirm(false);
     }
   };
 
@@ -67,6 +70,8 @@ const VoucherCard: React.FC<Props> = ({
         toast.error(`Error Pakai Voucher: ${error.response.data.message}`);
       }
       console.log("Use Error", error);
+    } finally {
+      setOpenConfirm(false);
     }
   };
 
@@ -143,7 +148,7 @@ const VoucherCard: React.FC<Props> = ({
                     onMouseDown={(event) => event.stopPropagation()}
                     onClick={(event) => {
                       event.stopPropagation();
-                      handleClaim();
+                      setOpenConfirm(true);
                     }}
                   >
                     Klaim
@@ -157,7 +162,7 @@ const VoucherCard: React.FC<Props> = ({
                     onMouseDown={(event) => event.stopPropagation()}
                     onClick={(event) => {
                       event.stopPropagation();
-                      handlePakai();
+                      setOpenConfirm(true);
                     }}
                   >
                     Pakai
@@ -183,6 +188,12 @@ const VoucherCard: React.FC<Props> = ({
         open={open}
         handleClose={handleClose}
         desc={voucher.deskripsi}
+      />
+      <DialogConfirm
+        open={openConfirm}
+        handleClose={() => setOpenConfirm(false)}
+        handleSubmit={value === "1" ? handleClaim : handlePakai}
+        text={value}
       />
     </>
   );

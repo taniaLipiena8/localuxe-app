@@ -52,7 +52,11 @@ const BrandCard: React.FC<Props> = ({ brand }) => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
         }}
       >
         {detailBrandData && (

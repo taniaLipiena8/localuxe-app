@@ -1,19 +1,34 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useGetDetailInsight from "./services/useGetDetailInsight";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const InsightDetailPage: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { detailInsightData } = useGetDetailInsight({
     insightId: parseInt(id!),
   });
 
+  const handleBack = () => {
+    navigate(-1)
+  };
+
   return (
     detailInsightData && (
       <Stack paddingX={30} gap={5}>
         <Stack width={"100%"} justifyContent={"center"}>
+          <Stack justifyContent={"start"}>
+            <Button
+              sx={{ width: "30px" }}
+              startIcon={<ChevronLeftIcon fontSize="medium" />}
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+          </Stack>
           <Typography
             fontSize={24}
             fontWeight={700}
@@ -57,12 +72,11 @@ const InsightDetailPage: React.FC = () => {
         </Typography>
         <Stack flexDirection={"row"} justifyContent={"end"} width={"100%"}>
           <Typography color={"#674342"} fontWeight={700}>
-            Views: {detailInsightData.views}
+            Views: {detailInsightData.views + 1}
           </Typography>
         </Stack>
       </Stack>
     )
   );
 };
-// new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date)
 export default InsightDetailPage;

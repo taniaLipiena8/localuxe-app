@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Popover,
+  Stack,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SideWords from "./components/SideWords";
 import useGetWords from "./services/useGetWords";
@@ -9,6 +17,7 @@ import { isEmpty } from "lodash";
 import useAxiosAuth from "../../hooks/useAxiosAuth";
 import toast, { Toaster } from "react-hot-toast";
 import useGetUserPoint from "../tukarPoin/services/useGetUserPoint";
+import InfoIcon from "@mui/icons-material/Info";
 
 const GamePage: React.FC = () => {
   const { getWords, wordList } = useGetWords();
@@ -16,6 +25,10 @@ const GamePage: React.FC = () => {
   const axiosAuth = useAxiosAuth();
 
   const userId = localStorage.getItem("userId");
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
   const [adjustedWords, setAdjustedWords] = useState<WordGame[]>([]);
   const [grid, setGrid] = useState<any[]>([]);
@@ -28,15 +41,15 @@ const GamePage: React.FC = () => {
   const [colDif, setColDif] = useState(0);
   const [rowDif, setRowDif] = useState(0);
 
-  const [check, setCheck] = useState<any[]>([]);
+  // const [check, setCheck] = useState<any[]>([]);
   const updatePoint = async () => {
     try {
       const body = {
-        point: 100,
+        point: 5,
       };
       await axiosAuth.put(`/update_point?user_id=${Number(userId)}`, body);
-      getUserPoint()
-      toast.success("Sukses Update Point");
+      getUserPoint();
+      toast.success("Poin berhasil ditambahkan!");
     } catch (error: any) {
       toast.error(error.response.data.message);
       console.log("Error update point", error);
@@ -66,6 +79,10 @@ const GamePage: React.FC = () => {
       getWords();
     }
   }, [correctWords]);
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   function generateGrid() {
     const grid = Array.from(Array(12), () => new Array(12).fill(null));
@@ -167,7 +184,7 @@ const GamePage: React.FC = () => {
         }
       }
     }
-    setCheck(highlightedItems);
+    // setCheck(highlightedItems);
     setGrid(grid);
   }
 
@@ -246,24 +263,70 @@ const GamePage: React.FC = () => {
       setTempChosenPositions([]);
       setChosenWord("");
     } else {
+      toast.error("Kata tidak sesuai dengan salah satu dari lima kata kunci!")
       setTempChosenPositions([]);
       setChosenWord("");
     }
-    // Check if all words are correct
   };
 
   return (
     wordList.length > 0 && (
       <Stack paddingX={30} marginTop={2}>
         <Stack justifyContent={"center"} alignItems={"center"} gap={2}>
-        <Typography
-            textAlign={"left"}
-            component="div"
-            variant="h5"
-            color={"#674342"}
-          >
-            Word Search Game
-          </Typography>
+          <Stack flexDirection={"row"} gap={1} alignItems={"center"}>
+            <Typography
+              textAlign={"left"}
+              component="div"
+              variant="h5"
+              color={"#674342"}
+            >
+              Word Search Game
+            </Typography>
+            <IconButton
+              sx={{ color: "#674342" }}
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+            >
+              <InfoIcon />
+            </IconButton>
+
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              sx={{borderRadius:3, border:"1px solid #674342"}}
+            >
+              <Stack flexDirection={"column"} padding={2}>
+                <Typography color={"#674342"} fontWeight={700} marginBottom={1}>Instruksi:</Typography>
+                <Typography color={"#674342"}>
+                  1. Temukan lima kata dalam kotak.
+                </Typography>
+                <Typography color={"#674342"}>
+                  2. Kata dapat ditemukan secara vertikal, horizontal, maupun
+                  diagonal.
+                </Typography>
+                <Typography color={"#674342"}>
+                  3. Klik alphabet pada kotak dibawah sehingga membentuk sebuah
+                  kata.
+                </Typography>
+                <Typography color={"#674342"}>
+                  4. Tekan tombol submit setelah kata terbentuk.
+                </Typography>
+                <Typography color={"#674342"}>
+                  5. Bila kata sesuai dengan kata kunci pada samping kiri, poin anda akan bertambah.
+                </Typography>
+                <Typography color={"#674342"} marginTop={1}>Goodluck!! ^^</Typography>
+              </Stack>
+            </Popover>
+          </Stack>
           <Typography
             textAlign={"left"}
             component="div"
