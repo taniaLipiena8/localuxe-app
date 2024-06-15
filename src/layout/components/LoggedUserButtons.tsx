@@ -11,7 +11,6 @@ import {
   DialogTitle,
   IconButton,
   Stack,
-  Typography,
   useTheme,
 } from "@mui/material";
 import AuthContext from "../../context/AuthProvider";
