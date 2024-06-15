@@ -1,8 +1,7 @@
 import React from "react";
 import useGetHistoryVoucher from "../services/useHistoryVoucher";
-import { Stack, Grid, Typography } from '@mui/material';
-import VoucherCard from './VoucherCard';
-
+import { Stack, Grid, Typography } from "@mui/material";
+import VoucherCard from "./VoucherCard";
 
 const HistoryVoucherList: React.FC = () => {
   const { historyVouchers } = useGetHistoryVoucher();
@@ -11,7 +10,7 @@ const HistoryVoucherList: React.FC = () => {
       <Grid container spacing={5}>
         {historyVouchers.map((voucher) => (
           <Grid item xs={6}>
-            <VoucherCard voucher={voucher.voucher}  />
+            <VoucherCard voucher={voucher.voucher} dipakai={voucher.dipakai} />
           </Grid>
         ))}
       </Grid>

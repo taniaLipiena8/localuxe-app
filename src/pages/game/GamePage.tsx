@@ -8,9 +8,11 @@ import english from "../../utils/EnglishLetters";
 import { isEmpty } from "lodash";
 import useAxiosAuth from "../../hooks/useAxiosAuth";
 import toast, { Toaster } from "react-hot-toast";
+import useGetUserPoint from "../tukarPoin/services/useGetUserPoint";
 
 const GamePage: React.FC = () => {
   const { getWords, wordList } = useGetWords();
+  const { getUserPoint, userPoint } = useGetUserPoint();
   const axiosAuth = useAxiosAuth();
 
   const userId = localStorage.getItem("userId");
@@ -29,11 +31,12 @@ const GamePage: React.FC = () => {
   const [check, setCheck] = useState<any[]>([]);
   const updatePoint = async () => {
     try {
-      await axiosAuth.put(
-        `/update_point?user_id=${Number(userId)}&point=${20}`
-      );
+      const body = {
+        point: 100,
+      };
+      await axiosAuth.put(`/update_point?user_id=${Number(userId)}`, body);
+      getUserPoint()
       toast.success("Sukses Update Point");
-      getWords();
     } catch (error: any) {
       toast.error(error.response.data.message);
       console.log("Error update point", error);
@@ -56,8 +59,11 @@ const GamePage: React.FC = () => {
   }, [wordList]);
 
   useEffect(() => {
-    if (correctWords.length === 5) {
+    if (correctWordPositions.length > 0) {
       updatePoint();
+    }
+    if (correctWords.length === 5) {
+      getWords();
     }
   }, [correctWords]);
 
@@ -68,18 +74,18 @@ const GamePage: React.FC = () => {
     for (const word of wordList) {
       const wordLength = word.length;
       // I think 1000 is enough iterations
-      const maxIterations = 1000;
-      let iterations = 0;
+      const maxChecks = 1000;
+      let checks = 0;
       if (wordLength > 12) {
-        setErrorMessage(`Error Generating Grid Please Refresh`);
+        setErrorMessage(`Error Generating Grid, Please Refresh`);
         setSizeError(true);
         return;
       } else {
         setErrorMessage("");
         setSizeError(false);
       }
-      // Loop to make sure every word has a place in the grid
-      while (iterations < maxIterations) {
+      // Loop to make sure each word has a place in the grid
+      do {
         const orientation = Math.floor(Math.random() * 4);
         let startRow, startCol, rowStep, colStep;
 
@@ -115,24 +121,26 @@ const GamePage: React.FC = () => {
           colStep = 1;
         }
 
-        let validLocation = true;
+        let positionValid = true;
 
-        // Check if the word fits in the grid at the chosen location and orientation
+        // check if word fits the grid with the current orientation and position
         for (let i = 0; i < wordLength; i++) {
           const row = startRow + i * rowStep;
           const col = startCol + i * colStep;
 
           if (grid[row][col] !== null && grid[row][col] !== word[i]) {
-            validLocation = false;
+            positionValid = false;
             break;
           }
         }
 
         // If the word fits, insert it into the grid and exit the loop
-        if (validLocation) {
+        if (positionValid) {
           for (let i = 0; i < wordLength; i++) {
             const rowIndex = startRow + i * rowStep;
             const colIndex = startCol + i * colStep;
+            console.log("test", rowIndex, colIndex);
+
             const letter = word[i].toUpperCase();
             grid[rowIndex][colIndex] = letter;
             highlightedItems.push(
@@ -141,11 +149,17 @@ const GamePage: React.FC = () => {
           }
           break;
         }
-        iterations++;
-      }
+        if (positionValid === false && checks === maxChecks) {
+          toast.error(
+            "Terdapat kesalahan dalam pembuatan grid kata, halaman akan dimuat ulang."
+          );
+          getWords();
+        }
+        checks++;
+      } while (checks <= maxChecks);
     }
 
-    // fill the empty spaces with random letters
+    // Fill the empty grid with random letters
     for (let i = 0; i < 12; i++) {
       for (let j = 0; j < 12; j++) {
         if (grid[i][j] == null) {
@@ -240,97 +254,118 @@ const GamePage: React.FC = () => {
 
   return (
     wordList.length > 0 && (
-      <Stack paddingX={30} flexDirection={"row"} marginTop={5}>
-        <SideWords words={adjustedWords} />
+      <Stack paddingX={30} marginTop={2}>
+        <Stack justifyContent={"center"} alignItems={"center"} gap={2}>
+        <Typography
+            textAlign={"left"}
+            component="div"
+            variant="h5"
+            color={"#674342"}
+          >
+            Word Search Game
+          </Typography>
+          <Typography
+            textAlign={"left"}
+            component="div"
+            variant="h6"
+            color={"#674342"}
+          >
+            Poin Anda : {userPoint}
+          </Typography>
+        </Stack>
+        <Stack flexDirection={"row"} marginTop={5}>
+          <SideWords words={adjustedWords} />
 
-        <Divider orientation="vertical" flexItem />
-        <Stack paddingX={5} width={"100%"}>
-          {sizeError ? (
-            <Typography>{errorMessage}</Typography>
-          ) : (
-            <Stack
-              width={"100%"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={2}
-            >
+          <Divider orientation="vertical" flexItem />
+          <Stack paddingX={5} width={"100%"}>
+            {sizeError ? (
+              <Typography>{errorMessage}</Typography>
+            ) : (
               <Stack
                 width={"100%"}
                 flexDirection={"column"}
                 justifyContent={"center"}
                 alignItems={"center"}
+                gap={2}
               >
-                {grid.map((row, rowIndex) => (
-                  <Stack
-                    key={rowIndex}
-                    sx={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      maxWidth: "100%",
-                    }}
-                  >
-                    {row.map((letter: string, colIndex: number) => (
-                      <Button
-                        key={colIndex}
-                        sx={{
-                          display: "flex",
-                          height: "30px",
-                          width: "30px",
-                          border: "1px solid #964A52",
-                          textAlign: "center",
-                          padding: 0,
-                          minWidth: 0,
-                          "&:disabled": {
-                            backgroundColor: "#964A52",
-                            color: "white",
-                          },
-                          color: "#964A52",
-                        }}
-                        disabled={
-                          check.includes(
-                            JSON.stringify({ rowIndex, colIndex, letter })
-                          ) ||
-                          tempChosenPositions.includes(
-                            JSON.stringify({ rowIndex, colIndex, letter })
-                          )
-                        }
-                        onClick={() => {
-                          handleClickGrid(rowIndex, colIndex, letter);
-                        }}
-                      >
-                        <Typography fontWeight={700}>
-                          {letter.toUpperCase()}
-                        </Typography>
-                      </Button>
-                    ))}
-                  </Stack>
-                ))}
+                <Stack
+                  width={"100%"}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  {grid.map((row, rowIndex) => (
+                    <Stack
+                      key={rowIndex}
+                      sx={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      {row.map((letter: string, colIndex: number) => (
+                        <Button
+                          key={colIndex}
+                          sx={{
+                            display: "flex",
+                            height: "30px",
+                            width: "30px",
+                            border: "1px solid #964A52",
+                            textAlign: "center",
+                            padding: 0,
+                            minWidth: 0,
+                            "&:disabled": {
+                              backgroundColor: "#964A52",
+                              color: "white",
+                            },
+                            color: "#964A52",
+                          }}
+                          disabled={
+                            correctWordPositions.includes(
+                              JSON.stringify({ rowIndex, colIndex, letter })
+                            ) ||
+                            tempChosenPositions.includes(
+                              JSON.stringify({ rowIndex, colIndex, letter })
+                            )
+                          }
+                          onClick={() => {
+                            handleClickGrid(rowIndex, colIndex, letter);
+                          }}
+                        >
+                          <Typography fontWeight={700}>
+                            {letter.toUpperCase()}
+                          </Typography>
+                        </Button>
+                      ))}
+                    </Stack>
+                  ))}
+                </Stack>
+                <Box
+                  sx={{
+                    display: "flex",
+                    border: "1px solid #964A52",
+                    width: "80%",
+                    height: "34px",
+                    textAlign: "center",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {chosenWord}
+                </Box>
+                <Button
+                  variant="contained"
+                  sx={{ color: "white" }}
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
               </Stack>
-              <Box
-                sx={{
-                  display: "flex",
-                  border: "1px solid #964A52",
-                  width: "80%",
-                  height: "34px",
-                  textAlign: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {chosenWord}
-              </Box>
-              <Button
-                variant="contained"
-                sx={{ color: "white" }}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-            </Stack>
-          )}
+            )}
+          </Stack>
         </Stack>
+
         <Toaster />
       </Stack>
     )

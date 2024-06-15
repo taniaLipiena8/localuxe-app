@@ -22,7 +22,7 @@ const useGetDetailInsight = ({ insightId }: Param) => {
     } else {
       setData(null);
     }
-  }, [insightId]);
+  }, [insightId, ]);
 
   const getDetailInsight = async () => {
     try {

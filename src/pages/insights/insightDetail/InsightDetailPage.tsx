@@ -9,7 +9,7 @@ const InsightDetailPage: React.FC = () => {
   const { detailInsightData } = useGetDetailInsight({
     insightId: parseInt(id!),
   });
-  
+
   return (
     detailInsightData && (
       <Stack paddingX={30} gap={5}>
@@ -31,11 +31,12 @@ const InsightDetailPage: React.FC = () => {
           <Box
             component="img"
             sx={{
-              height: "230px",
+              height: "400px",
               width: "auto",
               objectFit: "contain",
+              marginTop: 2,
             }}
-            alt="The house from the offer."
+            alt="detail insight image"
             src={detailInsightData.gambar}
           />
         </Stack>
@@ -54,6 +55,11 @@ const InsightDetailPage: React.FC = () => {
             );
           })}
         </Typography>
+        <Stack flexDirection={"row"} justifyContent={"end"} width={"100%"}>
+          <Typography color={"#674342"} fontWeight={700}>
+            Views: {detailInsightData.views}
+          </Typography>
+        </Stack>
       </Stack>
     )
   );

@@ -28,6 +28,7 @@ class VoucherListRecord {
   poinDibutuhkan!: number;
   periodeAwal!: string;
   periodeAkhir!: string;
+  gambarVoucher!: string;
 
   constructor(json: any) {
     this.mapFromJson(json);
@@ -52,6 +53,7 @@ class VoucherListRecord {
         year: "numeric",
       })
       .replace(/ /g, "-")}`;
+    this.gambarVoucher = json["gambar"];
   }
 }
 

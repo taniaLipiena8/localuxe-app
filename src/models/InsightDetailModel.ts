@@ -36,8 +36,9 @@ class InsightDetailData {
     this.id = json["id"];
     this.gambar = json["gambar"];
     this.judul = json["judul"];
-    this.konten = json["konten"]
+    this.konten = json["konten"];
     this.link = json["link"];
+    this.views = json["views"];
     this.namaPenulis = json["nama_penulis"];
     this.ringkasanKonten = json["ringkasan_konten"];
     this.tanggalPembuatan = `${new Date(json["tanggal_pembuatan"])

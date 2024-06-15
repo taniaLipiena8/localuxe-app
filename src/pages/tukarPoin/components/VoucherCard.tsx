@@ -13,16 +13,29 @@ import toast, { Toaster } from "react-hot-toast";
 import useAxiosAuth from "../../../hooks/useAxiosAuth";
 import DialogCard from "./DialogCard";
 import VoucherContext from "../context/VoucherContext";
+import ClaimedVoucherContext from "../context/ClaimedVoucherContext";
+import { debounce } from "lodash";
 
 interface Props {
+  voucherDetailId?: number;
   voucher: VoucherListRecord;
+  dipakai?: boolean;
 }
 
-const VoucherCard: React.FC<Props> = ({ voucher }) => {
+const VoucherCard: React.FC<Props> = ({
+  voucher,
+  voucherDetailId,
+  dipakai,
+}) => {
   const axiosAuth = useAxiosAuth();
   const { value, getPoint } = useContext(VoucherContext);
+  const { getClaimedVouchers } = useContext(ClaimedVoucherContext);
 
   const [open, setOpen] = React.useState<boolean>(false);
+
+  const getVoucher = debounce(() => {
+    getClaimedVouchers();
+  }, 300);
 
   const handleClaim = async () => {
     try {
@@ -30,27 +43,32 @@ const VoucherCard: React.FC<Props> = ({ voucher }) => {
         voucher_id: voucher.voucherId,
       };
       await axiosAuth.post("/claim_voucher", body);
-      toast.success("Sukses Klaim Voucher");
+      toast.success("Sukses Klaim Voucher!");
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      if (error.response.data.status !== 403) {
+        toast.error(`Error Klaim Voucher : ${error.response.data.message}`);
+      }
       console.log("Klaim Error", error);
     } finally {
       getPoint();
     }
   };
 
-  //   const handlePakai = async () => {
-  //     try {
-  //       const body = {
-  //         voucher_id: voucher.voucherId,
-  //       };
-  //       await axiosAuth.post("/claim_voucher", body);
-  //       toast.success("Sukses Klaim Voucher");
-  //     } catch (error: any) {
-  //       toast.error(error.response.data.message);
-  //       console.log("Klaim Error", error);
-  //     }
-  //   };
+  const handlePakai = async () => {
+    try {
+      const body = {
+        voucher_detail_id: voucherDetailId,
+      };
+      await axiosAuth.put("/use_voucher", body);
+      toast.success("Sukses Pakai Voucher!");
+      getVoucher();
+    } catch (error: any) {
+      if (error.response.data.status !== 403) {
+        toast.error(`Error Pakai Voucher: ${error.response.data.message}`);
+      }
+      console.log("Use Error", error);
+    }
+  };
 
   const handleClickCard = () => {
     setOpen(true);
@@ -80,7 +98,7 @@ const VoucherCard: React.FC<Props> = ({ voucher }) => {
           onClick={() => handleClickCard()}
         >
           <Stack width={150} padding={1} sx={{ justifyContent: "center" }}>
-            <img src="/voucher.png" alt="Paris" width={"160px"} />
+            <img src={voucher.gambarVoucher} alt="Paris" width={"160px"} />
           </Stack>
           <CardContent
             sx={{
@@ -139,6 +157,7 @@ const VoucherCard: React.FC<Props> = ({ voucher }) => {
                     onMouseDown={(event) => event.stopPropagation()}
                     onClick={(event) => {
                       event.stopPropagation();
+                      handlePakai();
                     }}
                   >
                     Pakai
@@ -149,8 +168,9 @@ const VoucherCard: React.FC<Props> = ({ voucher }) => {
                     variant="subtitle1"
                     color="text.secondary"
                     component="div"
+                    fontWeight={700}
                   >
-                    Berakhir
+                    {dipakai === true ? "Dipakai" : "Berakhir"}
                   </Typography>
                 )}
               </Stack>

@@ -4,8 +4,9 @@ import useGetUserData from "../../services/useGetUserData";
 import { Avatar, Box, Button, IconButton, useTheme } from "@mui/material";
 import AuthContext from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import useAxiosAuth from "../../hooks/useAxiosAuth";
+import { debounce } from "lodash";
 
 const LoggedUserButtons = () => {
   const { setExp, setToken, setRefreshToken, setAuth } =
@@ -15,18 +16,25 @@ const LoggedUserButtons = () => {
   const navigate = useNavigate();
   const axiosAuth = useAxiosAuth();
 
+  const redirect = debounce(() => {
+    setExp(null);
+    setToken(null);
+    setAuth(null);
+    setRefreshToken(null);
+    localStorage.removeItem("userId");
+    localStorage.removeItem("auth");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("exp");
+    navigate("/");
+  }, 800);
+
   const handleLogout = async () => {
     try {
       await axiosAuth.delete("/logout");
-      setExp(null);
-      setToken(null);
-      setAuth(null);
-      setRefreshToken(null);
-      localStorage.removeItem("userId");
-      localStorage.removeItem("auth");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("exp");
-      navigate("/");
+
+      toast.success(`Sukses melakukan logout!`);
+
+      redirect();
     } catch (error: any) {
       toast.error(`Error Logout : ${error.toString()}`);
     }
@@ -69,6 +77,8 @@ const LoggedUserButtons = () => {
       >
         LOG OUT
       </Button>
+
+      <Toaster />
     </Box>
   );
 };

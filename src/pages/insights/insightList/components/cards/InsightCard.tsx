@@ -1,4 +1,11 @@
-import { Card, Stack, CardMedia, CardContent, Typography, CardActionArea } from "@mui/material";
+import {
+  Card,
+  Stack,
+  CardMedia,
+  CardContent,
+  Typography,
+  CardActionArea,
+} from "@mui/material";
 import React from "react";
 import { InsightListRecord } from "../../../../../models/InsightListModel";
 import { useNavigate } from "react-router-dom";
@@ -18,13 +25,16 @@ const InsightCard: React.FC<Props> = ({ insight }) => {
 
   return (
     <Card sx={{ display: "flex", width: "100%" }}>
-      <CardActionArea sx={{display:"flex", flexDirection:"row"}} onClick={handleClickCard}>
+      <CardActionArea
+        sx={{ display: "flex", flexDirection: "row" }}
+        onClick={handleClickCard}
+      >
         <Stack width={180} padding={2} sx={{ justifyContent: "center" }}>
           <CardMedia
             component="img"
             height="100"
             image={insight?.gambar}
-            alt="random insight image"
+            alt="insight image"
           />
         </Stack>
         <CardContent
@@ -56,6 +66,11 @@ const InsightCard: React.FC<Props> = ({ insight }) => {
             >
               {insight?.ringkasanKonten}
             </Typography>
+            <Stack direction={"row"} justifyContent={"end"}>
+              <Typography component="div" fontSize={12}>
+                views: {insight?.views}
+              </Typography>
+            </Stack>
           </Stack>
         </CardContent>
       </CardActionArea>
