@@ -263,7 +263,7 @@ const GamePage: React.FC = () => {
       setTempChosenPositions([]);
       setChosenWord("");
     } else {
-      toast.error("Kata tidak sesuai dengan salah satu dari lima kata kunci!")
+      toast.error("Kata tidak sesuai dengan salah satu dari lima kata kunci!");
       setTempChosenPositions([]);
       setChosenWord("");
     }
@@ -302,10 +302,12 @@ const GamePage: React.FC = () => {
                 vertical: "top",
                 horizontal: "center",
               }}
-              sx={{borderRadius:3, border:"1px solid #674342"}}
+              sx={{ borderRadius: 3, border: "1px solid #674342" }}
             >
               <Stack flexDirection={"column"} padding={2}>
-                <Typography color={"#674342"} fontWeight={700} marginBottom={1}>Instruksi:</Typography>
+                <Typography color={"#674342"} fontWeight={700} marginBottom={1}>
+                  Instruksi:
+                </Typography>
                 <Typography color={"#674342"}>
                   1. Temukan lima kata dalam kotak.
                 </Typography>
@@ -321,9 +323,12 @@ const GamePage: React.FC = () => {
                   4. Tekan tombol submit setelah kata terbentuk.
                 </Typography>
                 <Typography color={"#674342"}>
-                  5. Bila kata sesuai dengan kata kunci pada samping kiri, poin anda akan bertambah.
+                  5. Bila kata sesuai dengan kata kunci pada samping kiri, poin
+                  anda akan bertambah.
                 </Typography>
-                <Typography color={"#674342"} marginTop={1}>Goodluck!! ^^</Typography>
+                <Typography color={"#674342"} marginTop={1}>
+                  Goodluck!! ^^
+                </Typography>
               </Stack>
             </Popover>
           </Stack>
@@ -413,6 +418,7 @@ const GamePage: React.FC = () => {
                     textAlign: "center",
                     justifyContent: "center",
                     alignItems: "center",
+                    color: "#674342",
                   }}
                 >
                   {chosenWord}

@@ -116,6 +116,7 @@ const VoucherCard: React.FC<Props> = ({
               sx={{
                 justifyContent: "space-between",
                 height: "100%",
+                width: "100%",
               }}
               direction={"column"}
             >

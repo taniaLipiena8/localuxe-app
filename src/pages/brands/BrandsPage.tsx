@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import { Box, Button, Grid, Popover, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Popover,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import useGetBrandsList, {
   AdjustedBrandList,
 } from "./services/useGetBrandsList";
@@ -21,7 +29,9 @@ const BrandsPage = () => {
 
   const { adjustedBrandList } = useGetBrandsList();
 
-  const { detailBrandData } = useGetDetailBrand({ brandId: brandId });
+  const { detailBrandData, loading: loadingDetail } = useGetDetailBrand({
+    brandId: brandId,
+  });
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: any) => {
     setAnchorEl(event.currentTarget);
@@ -67,45 +77,69 @@ const BrandsPage = () => {
             horizontal: "center",
           }}
         >
-          {detailBrandData && (
-            <Stack
-              flexDirection={"column"}
-              sx={{
-                p: 2,
-                minWidth:
-                  detailBrandData.mediaSocial.length > 2 ? "650px" : "300px",
-                maxWidth: "700px",
-              }}
-            >
-              <BrandStory detailBrand={detailBrandData} />
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 0.5 }}>
-                <Grid
-                  item
-                  xs={detailBrandData.mediaSocial.length > 2 ? 4 : 12}
-                  textAlign={"left"}
+          {!loadingDetail ? (
+            <>
+              {detailBrandData && (
+                <Stack
+                  flexDirection={"column"}
+                  sx={{
+                    p: 2,
+                    minWidth:
+                      detailBrandData.mediaSocial.length > 2
+                        ? "650px"
+                        : "300px",
+                    maxWidth: "700px",
+                  }}
                 >
-                  {detailBrandData.mediaSocial
-                    .filter((_: any, index: number) => index < 2)
-                    .map((socmed: SocialMediaData, idx: number) => (
-                      <SocialMediaPerBrand socialMediaData={socmed} key={idx} />
-                    ))}
-                </Grid>
-                <Grid item xs={4} textAlign={"left"}>
-                  {detailBrandData.mediaSocial
-                    .filter((_: any, index: number) => index > 1 && index < 4)
-                    .map((socmed: SocialMediaData) => (
-                      <SocialMediaPerBrand socialMediaData={socmed} />
-                    ))}
-                </Grid>
-                <Grid item xs={4} textAlign={"left"}>
-                  {detailBrandData.mediaSocial
-                    .filter((_: any, index: number) => index > 3 && index < 6)
-                    .map((socmed: SocialMediaData) => (
-                      <SocialMediaPerBrand socialMediaData={socmed} />
-                    ))}
-                </Grid>
-              </Grid>
-            </Stack>
+                  <BrandStory detailBrand={detailBrandData} />
+                  <Grid container rowSpacing={1} columnSpacing={{ xs: 0.5 }}>
+                    <Grid
+                      item
+                      xs={detailBrandData.mediaSocial.length > 2 ? 4 : 12}
+                      textAlign={"left"}
+                    >
+                      {detailBrandData.mediaSocial
+                        .filter((_: any, index: number) => index < 2)
+                        .map((socmed: SocialMediaData, idx: number) => (
+                          <SocialMediaPerBrand
+                            socialMediaData={socmed}
+                            key={idx}
+                          />
+                        ))}
+                    </Grid>
+                    <Grid item xs={4} textAlign={"left"}>
+                      {detailBrandData.mediaSocial
+                        .filter(
+                          (_: any, index: number) => index > 1 && index < 4
+                        )
+                        .map((socmed: SocialMediaData) => (
+                          <SocialMediaPerBrand socialMediaData={socmed} />
+                        ))}
+                    </Grid>
+                    <Grid item xs={4} textAlign={"left"}>
+                      {detailBrandData.mediaSocial
+                        .filter(
+                          (_: any, index: number) => index > 3 && index < 6
+                        )
+                        .map((socmed: SocialMediaData) => (
+                          <SocialMediaPerBrand socialMediaData={socmed} />
+                        ))}
+                    </Grid>
+                  </Grid>
+                </Stack>
+              )}
+            </>
+          ) : (
+            <>
+              <Stack padding={2} gap={1}>
+                <Stack flexDirection={"row"} gap={3}>
+                  <Skeleton variant="circular" width={60} height={60} />
+                  <Skeleton variant="text" width={100} height={40} />
+                </Stack>
+                <Skeleton variant="rounded" width={"300px"} height={60} />
+                <Skeleton variant="rounded" width={"300px"} height={30} />
+              </Stack>
+            </>
           )}
         </Popover>
 
