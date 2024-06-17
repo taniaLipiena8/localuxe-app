@@ -1,4 +1,4 @@
-import { Box, Button, Container,  Tooltip } from "@mui/material";
+import { Box, Button, Container, Tooltip } from "@mui/material";
 import React, { useContext, useState } from "react";
 import VisitorButtons from "./components/VisitorButtons";
 import LoggedUserButtons from "./components/LoggedUserButtons";
@@ -37,9 +37,12 @@ const Navbar: React.FC = () => {
             <img
               height={"40px"}
               width="auto"
-              style={{ objectFit: "cover" }}
+              style={{
+                objectFit: "cover",
+                cursor: "pointer",
+              }}
               src="/LocaluxeNavbar.png"
-              onClick={()=> navigate(`/`)}
+              onClick={() => navigate(`/`)}
             />
           </Box>
           <Box display={"flex"} gap={7} justifyContent={"center"} paddingX={7}>
