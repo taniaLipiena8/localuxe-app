@@ -58,11 +58,6 @@ const BrandsPage = () => {
           </Typography>
         </Stack>
 
-        {/* ini buat nambah onclick scroll but its just nice to have not rlly necessary rn */}
-        {/* <Stack width={"100%"} justifyContent={"center"} marginBottom={4}>
-          {adjustedB}
-        </Stack> */}
-
         <Popover
           id={id}
           open={open}

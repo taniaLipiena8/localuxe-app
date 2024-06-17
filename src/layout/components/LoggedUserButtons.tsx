@@ -11,6 +11,7 @@ import {
   DialogTitle,
   IconButton,
   Stack,
+  Tooltip,
   useTheme,
 } from "@mui/material";
 import AuthContext from "../../context/AuthProvider";
@@ -65,15 +66,17 @@ const LoggedUserButtons = () => {
       }}
       gap={3}
     >
-      <IconButton
-        onClick={() => navigate("/account")}
-        sx={{
-          height: "36px",
-          width: "fit-content",
-        }}
-      >
-        <Avatar src={userData?.gambarProfile} />
-      </IconButton>
+      <Tooltip arrow title="Account Page">
+        <IconButton
+          onClick={() => navigate("/account")}
+          sx={{
+            height: "36px",
+            width: "fit-content",
+          }}
+        >
+          <Avatar src={userData?.gambarProfile} />
+        </IconButton>
+      </Tooltip>
       <Button
         fullWidth
         variant="contained"
@@ -99,7 +102,7 @@ const LoggedUserButtons = () => {
         </DialogTitle>
         <DialogContent>
           <DialogActions>
-            <Stack width={"100%"} gap={2} flexDirection={"row"} >
+            <Stack width={"100%"} gap={2} flexDirection={"row"}>
               <Button
                 fullWidth
                 variant="outlined"

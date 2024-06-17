@@ -33,7 +33,12 @@ const SideInsightCard: React.FC<Props> = ({ insight }) => {
         />
         <CardContent sx={{ padding: 0 }}>
           <Stack marginBottom={1} marginTop={0.5}>
-            <Typography fontSize={12} textAlign={"right"} width={"100%"}>
+            <Typography
+              fontSize={12}
+              textAlign={"right"}
+              width={"100%"}
+              color={"white"}
+            >
               {insight?.namaPenulis}
             </Typography>
           </Stack>

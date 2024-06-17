@@ -40,7 +40,7 @@ const ChangePasswordForm: React.FC = () => {
       getUserData();
       window.location.reload();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(`Error mengganti password : ${error.response.data.message}`);
       console.log("Error mengganti password.", error);
     }
   };

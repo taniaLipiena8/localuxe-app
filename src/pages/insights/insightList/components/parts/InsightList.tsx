@@ -1,15 +1,25 @@
-import { Pagination, Stack, TextField, Typography } from "@mui/material";
+import {
+  Pagination,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import InsightCard from "../cards/InsightCard";
 import { useSearchParams } from "react-router-dom";
 import { debounce } from "lodash";
 import useGetInsightList from "../../../../../services/useGetInsightList";
+import SkeletonInsightList from "../cards/SkeletonInsightList";
 
 const InsightList: React.FC = () => {
   const [currPage, setCurrPage] = useState<number | null>(null);
   const [search, setSearch] = useSearchParams();
 
-  const { insightListData: insightList, totalPage } = useGetInsightList({
+  const {
+    insightListData: insightList,
+    totalPage,
+    loading,
+  } = useGetInsightList({
     currPage: currPage,
     search: search,
   });
@@ -51,7 +61,7 @@ const InsightList: React.FC = () => {
       spacing={2}
       justifyContent={"space-between"}
     >
-      <Stack gap={2}>
+      <Stack gap={4}>
         <Stack flexDirection={"row"} justifyContent={"space-between"}>
           <Typography fontSize={18} fontWeight={700} color={"#674342"}>
             ARTICLES
@@ -65,9 +75,19 @@ const InsightList: React.FC = () => {
             }}
           />
         </Stack>
-        {insightList.map((insight) => (
-          <InsightCard insight={insight} key={insight.id} />
-        ))}
+        {loading ? (
+          <>
+            {Array.from(Array(6)).map((_, index) => (
+              <SkeletonInsightList key={index} />
+            ))}
+          </>
+        ) : (
+          <>
+            {insightList.map((insight) => (
+              <InsightCard insight={insight} key={insight.id} />
+            ))}
+          </>
+        )}
       </Stack>
       <Stack justifyContent={"center"} alignItems={"center"}>
         <Pagination

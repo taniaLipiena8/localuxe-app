@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetDetailInsight from "./services/useGetDetailInsight";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Link, Box, Button, Stack, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const InsightDetailPage: React.FC = () => {
@@ -13,7 +13,7 @@ const InsightDetailPage: React.FC = () => {
   });
 
   const handleBack = () => {
-    navigate(-1)
+    navigate(-1);
   };
 
   return (
@@ -70,6 +70,18 @@ const InsightDetailPage: React.FC = () => {
             );
           })}
         </Typography>
+        {detailInsightData.link && (
+          <Stack
+            flexDirection={"column"}
+            justifyContent={"start"}
+            width={"100%"}
+            alignItems={"start"}
+          >
+            <Typography color={"#674342"}>Sumber dari:</Typography>
+            <Link href={detailInsightData.link}>{detailInsightData.link}</Link>
+          </Stack>
+        )}
+
         <Stack flexDirection={"row"} justifyContent={"end"} width={"100%"}>
           <Typography color={"#674342"} fontWeight={700}>
             Views: {detailInsightData.views + 1}

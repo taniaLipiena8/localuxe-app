@@ -22,16 +22,16 @@ const DashboardInsightCard: React.FC<Props> = ({ insightData }) => {
     });
   }
   return (
-    <Card sx={{ display: "flex", width: "100%", height: "130px" }}>
+    <Card sx={{ display: "flex", width: "100%" }}>
       <CardActionArea
         sx={{ display: "flex", flexDirection: "row", height: "100%" }}
         onClick={() => handleClickCard()}
       >
-        <Stack width={150} padding={1} sx={{ justifyContent: "center" }}>
+        <Stack width={180} padding={2} sx={{ justifyContent: "center" }}>
           <img
             src={insightData?.gambar}
             alt="Paris"
-            height="65%"
+            height="100"
             width="100%"
             style={{ objectFit: "cover" }}
           />
@@ -39,6 +39,8 @@ const DashboardInsightCard: React.FC<Props> = ({ insightData }) => {
         <CardContent
           sx={{
             textAlign: "left",
+            width: "100%",
+            paddingY:2
           }}
         >
           <Stack
@@ -48,16 +50,33 @@ const DashboardInsightCard: React.FC<Props> = ({ insightData }) => {
             }}
             direction={"column"}
           >
-            <Typography component="div" fontSize={18}>
-              {insightData?.judul}
+            <Stack
+              direction={"row"}
+              justifyContent={"space-between"}
+              paddingBottom={1}
+            >
+              <Typography component="div" fontSize={12}>
+                {insightData?.namaPenulis}
+              </Typography>
+              <Typography component="div" fontSize={12}>
+                {insightData?.tanggalPembuatan}
+              </Typography>
+            </Stack>
+            <Typography component="div" fontSize={17}>
+              {insightData?.judul.substring(0, 60) + '...'}
             </Typography>
             <Typography
               variant="subtitle1"
               color="text.secondary"
               component="div"
             >
-              {insightData?.tanggalPembuatan}
+              {insightData?.ringkasanKonten.substring(0, 55) + '...'}
             </Typography>
+            <Stack direction={"row"} justifyContent={"end"}>
+              <Typography component="div" fontSize={12}>
+                views: {insightData?.views}
+              </Typography>
+            </Stack>
           </Stack>
         </CardContent>
       </CardActionArea>

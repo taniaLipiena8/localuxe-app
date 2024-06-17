@@ -16,6 +16,7 @@ import EditField from "../../../components/formField/EditField";
 import { MuiTelInput } from "mui-tel-input";
 import useAxiosAuth from "../../../hooks/useAxiosAuth";
 import toast, { Toaster } from "react-hot-toast";
+import { isEmpty } from "lodash";
 
 const ProfileForm: React.FC = () => {
   const initValue = {
@@ -30,25 +31,29 @@ const ProfileForm: React.FC = () => {
   const [currData, setCurrData] = useState<any>(initValue);
   const { userData } = useGetUserData();
   const [preview, setPreview] = useState<any>(null);
+  const [newImage, setNewImage] = useState<any>(null);
   const axiosAuth = useAxiosAuth();
 
   const handleOnSubmit = async () => {
     try {
-      const body = {
+      const body: any = {
         nama_pengguna: currData.userName,
         nama_lengkap: currData.namaLengkap,
         gender: currData.gender,
         nomor_telepon: currData.nomorTelepon,
-        gambar_pengguna: currData.gambarProfile,
       };
 
+      if (!isEmpty(newImage)) {
+        body.gambar_pengguna = newImage;
+      }
+
       await axiosAuth.put("/user_profile", body);
-      toast.success("Sukses mengganti data profile");
+      toast.success("Sukses mengganti profile");
 
       window.location.reload();
     } catch (error: any) {
-      toast.error(error.response.data.message);
-      console.log("Error Submit", error);
+      toast.error(`Error Mengganti Profile : ${error.response.data.message}`);
+      console.log("Error Mengganti Profile", error);
     }
   };
 
@@ -65,14 +70,12 @@ const ProfileForm: React.FC = () => {
       [fieldName]: value,
     }));
   };
-  console.log(currData);
 
   const handleInputFile = (event: HTMLInputElement) => {
     if (event.files && event.files.length > 0) {
       const temp = event.files[0];
 
       const url = URL.createObjectURL(temp);
-      console.log(url);
 
       setPreview(url);
       const reader = new FileReader();
@@ -80,12 +83,7 @@ const ProfileForm: React.FC = () => {
 
       reader.onloadend = () => {
         const base64Data = reader.result;
-        console.log(base64Data);
-
-        handleChangeProfileValue(
-          "gambarProfile",
-          base64Data?.toString().split(",")[1]
-        );
+        setNewImage(base64Data?.toString().split(",")[1]);
       };
     }
   };
