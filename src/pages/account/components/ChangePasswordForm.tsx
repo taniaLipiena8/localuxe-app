@@ -25,6 +25,7 @@ const ChangePasswordForm: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
+  const passwordLama = form.watch("oldPassword");
   const passwordBaru = form.watch("newPassword");
 
   const handleOnSubmit = async (value: any) => {
@@ -108,7 +109,15 @@ const ChangePasswordForm: React.FC = () => {
             <Controller
               name="newPassword"
               control={form.control}
-              rules={{ required: "Mohon Diisi" }}
+              rules={{
+                required: "Mohon Diisi",
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})/,
+                  message:
+                    "Password harus memiliki huruf besar dan kecil, angka, karakter spesial, dan minimal berjumlah 6.",
+                },
+              }}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -159,6 +168,12 @@ const ChangePasswordForm: React.FC = () => {
                 validate: (value) =>
                   value === passwordBaru ||
                   "Password konfirmasi tidak sama dengan password baru!",
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})/,
+                  message:
+                    "Password harus memiliki huruf besar dan kecil, angka, karakter spesial, dan minimal berjumlah 6.",
+                },
               }}
               render={({
                 field: { onChange, value },
