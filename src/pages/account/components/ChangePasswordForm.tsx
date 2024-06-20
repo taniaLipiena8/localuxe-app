@@ -25,7 +25,6 @@ const ChangePasswordForm: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
-  const passwordLama = form.watch("oldPassword");
   const passwordBaru = form.watch("newPassword");
 
   const handleOnSubmit = async (value: any) => {
