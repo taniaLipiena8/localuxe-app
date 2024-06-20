@@ -42,7 +42,7 @@ const useGetInsightList = ({ currPage, search }: Params) => {
     } catch (error: any) {
       setData([]);
       setTotalPage(1);
-      setErrorMessage(error.toString());
+      setErrorMessage(error.response.data.message);
     }
     finally{
         setLoading(false)

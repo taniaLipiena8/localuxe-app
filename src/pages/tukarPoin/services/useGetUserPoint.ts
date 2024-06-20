@@ -33,7 +33,7 @@ const useGetUserPoint = () => {
       setData(response.data.data.jumlah_poin);
     } catch (error: any) {
       setData(null);
-      setErrorMessage(error.toString());
+      setErrorMessage(error.response.data.message);
     } finally {
       setLoading(false);
     }

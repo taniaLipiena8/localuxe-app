@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Stack, Typography } from "@mui/material";
 import React from "react";
-import DashboardInsightCard from "./DashboardInsightCard";
+import DashboardInsightCard from "./HomepageInsightCard";
 import useGetMostViewedInsight from "../../../../services/useGetMostViewedInsight";
 
 const MostViewedInsights: React.FC = () => {

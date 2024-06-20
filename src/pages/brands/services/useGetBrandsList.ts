@@ -44,7 +44,7 @@ const useGetBrandsList = () => {
       setData(Object.values(result));
     } catch (error: any) {
       setData([]);
-      setErrorMessage(error.toString());
+      setErrorMessage(error.response.data.message);
     } finally {
       setLoading(false);
     }

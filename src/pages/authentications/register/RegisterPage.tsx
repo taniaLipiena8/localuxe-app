@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   SxProps,
@@ -26,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../../../context/AuthProvider";
 import axiosClient from "../../../services/AxiosClient";
 import toast, { Toaster } from "react-hot-toast";
+import { debounce } from "lodash";
 
 const RegisterPage: React.FC = () => {
   const rootStyle = {
@@ -72,7 +74,11 @@ const RegisterPage: React.FC = () => {
   // ============================================== Functions =================================================
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleOnSubmit = async (value: any) => {
+  const redirect = debounce(() => {
+    navigate("/login");
+  }, 800);
+
+  const submitRegister = async (value: any) => {
     const body = {
       nama_lengkap: value.namaLengkap,
       nama_pengguna: value.username,
@@ -86,9 +92,12 @@ const RegisterPage: React.FC = () => {
       await axiosClient.post("/register", body, {
         withCredentials: true,
       });
-      navigate("/");
+      toast.success(`Register Berhasil!`);
+      redirect()
     } catch (error: any) {
-      toast.error(`Register Error: ${error.toString()}`);
+      console.log("test",error.response.data.message);
+
+      toast.error(`Register Error: ${error.response.data.message}`);
     }
   };
 
@@ -118,7 +127,7 @@ const RegisterPage: React.FC = () => {
         </Box>
 
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(handleOnSubmit)}>
+          <form onSubmit={form.handleSubmit(submitRegister)}>
             <Stack
               display={"flex"}
               flexDirection={"column"}
@@ -204,7 +213,15 @@ const RegisterPage: React.FC = () => {
               <Controller
                 name="password"
                 control={form.control}
-                rules={{ required: "This is required" }}
+                rules={{
+                  required: "This is required",
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})/,
+                    message:
+                      "Password harus memiliki huruf besar dan kecil, angka, karakter spesial, dan minimal berjumlah 6.",
+                  },
+                }}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },

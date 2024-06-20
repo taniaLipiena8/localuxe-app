@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "./App.css";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import Dashboard from "./pages/dashboard/Dashboard";
+import Dashboard from "./pages/homepage/Homepage";
 import LoginPage from "./pages/authentications/login/LoginPage";
 import RegisterPage from "./pages/authentications/register/RegisterPage";
 import BaseLayout from "./layout/BaseLayout";

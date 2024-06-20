@@ -1,8 +1,8 @@
 import { Box, Stack, useTheme } from "@mui/material";
 import React, { useEffect } from "react";
-import CarouselDashboard from "./components/Carousel/CarouselDashboard";
+import CarouselDashboard from "./components/Carousel/CarouselInsight";
 import LatestInsight from "./components/insights/LatestInsight";
-import BrandsDashboard from "./components/brands/BrandsDashboard";
+import BrandsDashboard from "./components/brands/BrandsListHomepage";
 import AboutLocaluxe from "./components/aboutUs/AboutLocaluxe";
 import MostViewedInsights from "./components/insights/MostViewedInsights";
 import { AxiosResponse } from "axios";

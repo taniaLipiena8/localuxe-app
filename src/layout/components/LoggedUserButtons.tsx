@@ -50,7 +50,7 @@ const LoggedUserButtons = () => {
 
       redirect();
     } catch (error: any) {
-      toast.error(`Error Logout : ${error.toString()}`);
+      toast.error(`Error Logout : ${error.response.data.message}`);
     } finally {
       setOpenConfirm(false);
     }

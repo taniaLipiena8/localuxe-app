@@ -145,7 +145,7 @@ const GamePage: React.FC = () => {
           const row = startRow + i * rowStep;
           const col = startCol + i * colStep;
 
-          if (grid[row][col] !== null && grid[row][col] !== word[i]) {
+          if (!isEmpty(grid[row][col]) ) {
             positionValid = false;
             break;
           }

@@ -100,6 +100,7 @@ const ProfileForm: React.FC = () => {
           <TextField
             label="Username"
             size="small"
+            required
             value={currData.userName ?? ""}
             onChange={(e) => {
               handleChangeProfileValue("userName", e.target.value);
@@ -114,6 +115,7 @@ const ProfileForm: React.FC = () => {
           <TextField
             label="Nama Lengkap"
             size="small"
+            required
             value={currData.namaLengkap ?? ""}
             onChange={(e) => {
               handleChangeProfileValue("namaLengkap", e.target.value);
@@ -171,6 +173,7 @@ const ProfileForm: React.FC = () => {
           <MuiTelInput
             defaultCountry="ID"
             forceCallingCode
+            required
             disableFormatting
             onChange={(e) => handleChangeProfileValue("nomorTelepon", e)}
             value={currData.nomorTelepon}

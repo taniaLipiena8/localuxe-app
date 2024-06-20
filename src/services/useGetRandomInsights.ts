@@ -23,7 +23,7 @@ const useGetRandomInsights = () => {
       setData(responseData.data);
     } catch (error: any) {
       setData([]);
-      setErrorMessage(error.toString());
+      setErrorMessage(error.response.data.message);
     } finally {
       setLoading(false);
     }

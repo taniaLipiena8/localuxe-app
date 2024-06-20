@@ -36,7 +36,7 @@ const useGetDetailBrand = ({ brandId }: Param) => {
       setData(result.data);
     } catch (error: any) {
       setData(null);
-      setErrorMessage(error.toString());
+      setErrorMessage(error.response.data.message);
     } finally {
       setLoading(false);
     }
