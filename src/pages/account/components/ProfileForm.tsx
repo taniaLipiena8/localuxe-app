@@ -17,7 +17,6 @@ import { MuiTelInput } from "mui-tel-input";
 import useAxiosAuth from "../../../hooks/useAxiosAuth";
 import toast, { Toaster } from "react-hot-toast";
 import { isEmpty } from "lodash";
-import { Controller } from "react-hook-form";
 
 const ProfileForm: React.FC = () => {
   const initValue = {
