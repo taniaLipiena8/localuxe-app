@@ -17,6 +17,7 @@ import { MuiTelInput } from "mui-tel-input";
 import useAxiosAuth from "../../../hooks/useAxiosAuth";
 import toast, { Toaster } from "react-hot-toast";
 import { isEmpty } from "lodash";
+import { Controller } from "react-hook-form";
 
 const ProfileForm: React.FC = () => {
   const initValue = {
@@ -33,16 +34,27 @@ const ProfileForm: React.FC = () => {
   const [preview, setPreview] = useState<any>(null);
   const [newImage, setNewImage] = useState<any>(null);
   const axiosAuth = useAxiosAuth();
+  console.log(currData);
 
   const handleOnSubmit = async () => {
     try {
+      if (
+        isEmpty(currData.userName) ||
+        isEmpty(currData.namaLengkap) ||
+        isEmpty(currData.nomorTelepon)
+      ) {
+        toast.error(
+          "Username, Nama Lengkap, dan Nomor Telepon tidak boleh kosong!"
+        );
+        return;
+      }
+
       const body: any = {
         nama_pengguna: currData.userName,
         nama_lengkap: currData.namaLengkap,
         gender: currData.gender,
         nomor_telepon: currData.nomorTelepon,
       };
-
       if (!isEmpty(newImage)) {
         body.gambar_pengguna = newImage;
       }
