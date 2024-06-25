@@ -41,21 +41,6 @@ const GamePage: React.FC = () => {
   const [colDif, setColDif] = useState(0);
   const [rowDif, setRowDif] = useState(0);
 
-  // const [check, setCheck] = useState<any[]>([]);
-  const updatePoint = async () => {
-    try {
-      const body = {
-        point: 5,
-      };
-      await axiosAuth.put(`/update_point?user_id=${Number(userId)}`, body);
-      getUserPoint();
-      toast.success("Poin berhasil ditambahkan!");
-    } catch (error: any) {
-      toast.error(error.response.data.message);
-      console.log("Error update point", error);
-    }
-  };
-
   useEffect(() => {
     if (wordList.length > 0) {
       const result = wordList.map((str: string) => ({
@@ -72,13 +57,62 @@ const GamePage: React.FC = () => {
   }, [wordList]);
 
   useEffect(() => {
-    if (correctWordPositions.length > 0) {
+    if (correctWords.length > 0) {
       updatePoint();
     }
     if (correctWords.length === 5) {
       getWords();
     }
   }, [correctWords]);
+
+  const updatePoint = async () => {
+    try {
+      const body = {
+        point: 5,
+      };
+      await axiosAuth.put(`/update_point?user_id=${Number(userId)}`, body);
+      getUserPoint();
+      toast.success(
+        "Kata sesuai dengan kata kunci! Poin anda sukses ditambahkan!"
+      );
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+      console.log("Error update point", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Check if chosenWord matches with any of the list words
+    const body = {
+      wordsList: wordList,
+      word: chosenWord,
+    };
+    try {
+      const valid = await axiosAuth.post(`/check_words`, body);
+      if (valid.data.data.isValid === true) {
+        setCorrectWords([...correctWords, chosenWord]);
+        setCorrectWordPositions([
+          ...correctWordPositions,
+          ...tempChosenPositions,
+        ]);
+        const index = adjustedWords.findIndex((x) => x.word === chosenWord);
+        const data: WordGame[] = [...adjustedWords];
+        data[index].correct = true;
+        setAdjustedWords(data);
+
+        setTempChosenPositions([]);
+        setChosenWord("");
+      } else {
+        toast.error(
+          "Kata tidak sesuai dengan salah satu dari lima kata kunci!"
+        );
+        setTempChosenPositions([]);
+        setChosenWord("");
+      }
+    } catch (error) {
+      toast.error("Error checking word");
+    }
+  };
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -145,7 +179,7 @@ const GamePage: React.FC = () => {
           const row = startRow + i * rowStep;
           const col = startCol + i * colStep;
 
-          if (!isEmpty(grid[row][col]) ) {
+          if (!isEmpty(grid[row][col])) {
             positionValid = false;
             break;
           }
@@ -156,7 +190,6 @@ const GamePage: React.FC = () => {
           for (let i = 0; i < wordLength; i++) {
             const rowIndex = startRow + i * rowStep;
             const colIndex = startCol + i * colStep;
-            console.log("test", rowIndex, colIndex);
 
             const letter = word[i].toUpperCase();
             grid[rowIndex][colIndex] = letter;
@@ -166,7 +199,7 @@ const GamePage: React.FC = () => {
           }
           break;
         }
-        if (positionValid === false && checks === maxChecks) {
+        if (checks === maxChecks && positionValid === false) {
           toast.error(
             "Terdapat kesalahan dalam pembuatan grid kata, halaman akan dimuat ulang."
           );
@@ -184,7 +217,6 @@ const GamePage: React.FC = () => {
         }
       }
     }
-    // setCheck(highlightedItems);
     setGrid(grid);
   }
 
@@ -246,26 +278,6 @@ const GamePage: React.FC = () => {
       setChosenWord(letter);
     } else {
       checkGridWord(rowIndex, colIndex, letter);
-    }
-  };
-
-  const handleSubmit = () => {
-    // Check if chosenWord matches with any of the list words
-    if (wordList.includes(chosenWord)) {
-      setCorrectWords([...correctWords, chosenWord]);
-      setCorrectWordPositions([
-        ...correctWordPositions,
-        ...tempChosenPositions,
-      ]);
-      const index = adjustedWords.findIndex((x) => x.word === chosenWord);
-      const data: WordGame[] = [...adjustedWords];
-      data[index].correct = true;
-      setTempChosenPositions([]);
-      setChosenWord("");
-    } else {
-      toast.error("Kata tidak sesuai dengan salah satu dari lima kata kunci!");
-      setTempChosenPositions([]);
-      setChosenWord("");
     }
   };
 

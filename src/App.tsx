@@ -7,7 +7,7 @@ import LoginPage from "./pages/authentications/login/LoginPage";
 import RegisterPage from "./pages/authentications/register/RegisterPage";
 import BaseLayout from "./layout/BaseLayout";
 import InsightPage from "./pages/insights/insightList/InsightPage";
-import { useContext, useEffect} from "react";
+import { useContext, useEffect } from "react";
 import BrandsPage from "./pages/brands/BrandsPage";
 import AuthContext from "./context/AuthProvider";
 import InsightDetailPage from "./pages/insights/insightDetail/InsightDetailPage";
@@ -15,6 +15,7 @@ import AccountPage from "./pages/account/AccountPage";
 import { PrivateRoute } from "./PrivatePage";
 import TukarPoinPage from "./pages/tukarPoin/TukarPoinPage";
 import GamePage from "./pages/game/GamePage";
+import NotFoundPage from "./pages/notFound/NotFoundPage";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -65,6 +66,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path={"*"} element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

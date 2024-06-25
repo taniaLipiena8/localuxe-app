@@ -8,10 +8,15 @@ const useGetVouchers = () => {
   const [voucherList, setData] = useState<VoucherListRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     getVoucherList();
-  }, []);
+  }, [mounted]);
 
   const getVoucherList = async () => {
     try {

@@ -39,7 +39,7 @@ const LoggedUserButtons = () => {
     localStorage.removeItem("auth");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("exp");
-    navigate("/");
+    navigate("/login");
   }, 800);
 
   const handleLogout = async () => {

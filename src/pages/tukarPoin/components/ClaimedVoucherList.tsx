@@ -15,8 +15,10 @@ const ClaimedVoucherList: React.FC = () => {
           {claimedVouchers.map((voucher) => (
             <Grid item xs={6}>
               <VoucherCard
+                key={voucher.voucherDetailId}
                 voucher={voucher.voucher}
                 voucherDetailId={voucher.voucherDetailId}
+                code={voucher.voucherCode}
               />
             </Grid>
           ))}

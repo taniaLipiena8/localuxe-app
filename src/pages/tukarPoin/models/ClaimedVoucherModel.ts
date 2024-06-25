@@ -28,6 +28,7 @@ class ClaimedVoucherData {
   voucherId!: number;
   userId!: number;
   dipakai!: boolean;
+  voucherCode!: string;
   voucher!: VoucherListRecord;
 
   constructor(json: any) {
@@ -37,6 +38,7 @@ class ClaimedVoucherData {
   mapFromJson(json: any) {
     this.voucherDetailId = json.voucher_detail_id;
     this.voucherId = json.voucher_id;
+    this.voucherCode = json.voucher_code;
     this.userId = json.user_id;
     this.dipakai = json.dipakai;
     this.voucher = new VoucherListRecord(json.voucher);

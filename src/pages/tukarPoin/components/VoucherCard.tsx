@@ -16,9 +16,11 @@ import VoucherContext from "../context/VoucherContext";
 import ClaimedVoucherContext from "../context/ClaimedVoucherContext";
 import { debounce } from "lodash";
 import DialogConfirm from "./DialogConfirm";
+import DialogVoucherCode from "./DialogVoucherCode";
 
 interface Props {
   voucherDetailId?: number;
+  code?: string;
   voucher: VoucherListRecord;
   dipakai?: boolean;
 }
@@ -27,6 +29,7 @@ const VoucherCard: React.FC<Props> = ({
   voucher,
   voucherDetailId,
   dipakai,
+  code
 }) => {
   const axiosAuth = useAxiosAuth();
   const { value, getPoint } = useContext(VoucherContext);
@@ -34,6 +37,7 @@ const VoucherCard: React.FC<Props> = ({
 
   const [open, setOpen] = useState<boolean>(false);
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+  const [openCode, setOpenCode] = useState<boolean>(false);
 
   const getVoucher = debounce(() => {
     getClaimedVouchers();
@@ -64,7 +68,7 @@ const VoucherCard: React.FC<Props> = ({
       };
       await axiosAuth.put("/use_voucher", body);
       toast.success("Sukses Pakai Voucher!");
-      getVoucher();
+      setOpenCode(true);
     } catch (error: any) {
       if (error.response.data.status !== 403) {
         toast.error(`Error Pakai Voucher: ${error.response.data.message}`);
@@ -195,6 +199,14 @@ const VoucherCard: React.FC<Props> = ({
         handleClose={() => setOpenConfirm(false)}
         handleSubmit={value === "1" ? handleClaim : handlePakai}
         text={value}
+      />
+      <DialogVoucherCode
+        handleClose={() => {
+          setOpenCode(false);
+          getVoucher();
+        }}
+        open={openCode}
+        code={code ?? ""}
       />
     </>
   );

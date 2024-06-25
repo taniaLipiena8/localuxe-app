@@ -6,10 +6,15 @@ const useGetWords = () => {
   const [wordList, setData] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     getWords();
-  }, []);
+  }, [mounted]);
 
   const getWords = async () => {
     try {
