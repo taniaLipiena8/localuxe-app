@@ -221,6 +221,7 @@ const GamePage: React.FC = () => {
   }
 
   function checkGridWord(rowIndex: number, colIndex: number, letter: string) {
+    // This is to get the last character of the temp word
     const temp = JSON.parse(
       tempChosenPositions[tempChosenPositions.length - 1]
     );

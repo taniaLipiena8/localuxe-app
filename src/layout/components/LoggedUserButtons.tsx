@@ -21,7 +21,7 @@ import useAxiosAuth from "../../hooks/useAxiosAuth";
 import { debounce } from "lodash";
 
 const LoggedUserButtons = () => {
-  const { setExp, setToken, setRefreshToken, setAuth } =
+  const { setToken, setAuth } =
     useContext(AuthContext);
   const { userData } = useGetUserData();
   const theme = useTheme();
@@ -31,14 +31,11 @@ const LoggedUserButtons = () => {
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
 
   const redirect = debounce(() => {
-    setExp(null);
     setToken(null);
     setAuth(null);
-    setRefreshToken(null);
     localStorage.removeItem("userId");
     localStorage.removeItem("auth");
     localStorage.removeItem("refreshToken");
-    localStorage.removeItem("exp");
     navigate("/login");
   }, 800);
 

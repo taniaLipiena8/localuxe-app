@@ -17,6 +17,7 @@ import {
   FormHelperText,
   Input,
   Avatar,
+  useTheme,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
@@ -58,11 +59,13 @@ const RegisterPage: React.FC = () => {
   // ========================================= Hooks and States =============================================
 
   const form = useForm();
+  const theme = useTheme()
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [preview, setPreview] = useState<any>(null);
   const [image, setImage] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // ============================================== useEffects =================================================
   useEffect(() => {
@@ -79,6 +82,7 @@ const RegisterPage: React.FC = () => {
   }, 800);
 
   const submitRegister = async (value: any) => {
+    setLoading(true);
     const body = {
       nama_lengkap: value.namaLengkap,
       nama_pengguna: value.username,
@@ -93,11 +97,13 @@ const RegisterPage: React.FC = () => {
         withCredentials: true,
       });
       toast.success(`Register Berhasil!`);
-      redirect()
+      redirect();
     } catch (error: any) {
-      console.log("test",error.response.data.message);
+      console.log("test", error.response.data.message);
 
       toast.error(`Register Error: ${error.response.data.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -264,7 +270,9 @@ const RegisterPage: React.FC = () => {
               <Controller
                 name="gender"
                 control={form.control}
-                rules={{ required: "This is required" }}
+                rules={{ required: "This is required", validate: (value) =>
+                  value === "female" ||
+                  "Harus perempuan!", }}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -290,7 +298,7 @@ const RegisterPage: React.FC = () => {
                             label="Lain-lain"
                           />
                         </RadioGroup>
-                        <FormHelperText>{error?.message}</FormHelperText>
+                        <FormHelperText sx={{color:theme.palette.error.main, marginLeft:1.5}}>{error?.message}</FormHelperText>
                       </>
                     }
                   />
@@ -343,6 +351,7 @@ const RegisterPage: React.FC = () => {
               type="submit"
               variant="contained"
               sx={{ width: "100%", my: 4, color: "white" }}
+              disabled={loading}
             >
               Submit
             </Button>

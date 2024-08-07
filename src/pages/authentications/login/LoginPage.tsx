@@ -50,7 +50,7 @@ const LoginPage: React.FC = () => {
   const form = useForm();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { setExp, setToken, setRefreshToken, setAuth, auth } =
+  const {  setToken, setAuth, auth } =
     useContext(AuthContext);
 
   // ============================================== useEffects =================================================
@@ -73,14 +73,11 @@ const LoginPage: React.FC = () => {
       });
       setAuth("Logged in");
       setToken(response.data.data.access_token);
-      setRefreshToken(response.data.data.refresh_token);
       const decoded = jwtDecode(response.data.data.access_token) as any;
-      setExp(decoded.exp!);
 
       localStorage.setItem("userId", String(decoded.id!));
       localStorage.setItem("auth", "Logged in");
       localStorage.setItem("refreshToken", response.data.data.refresh_token);
-      localStorage.setItem("exp", String(decoded.exp!));
 
       navigate("/");
     } catch (error: any) {

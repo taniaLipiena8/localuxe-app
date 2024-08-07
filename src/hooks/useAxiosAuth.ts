@@ -17,7 +17,7 @@ const useAxiosAuth = () => {
         return config;
       },
       (error) => {
-        console.log("ini di intercept request");
+        console.log("ini error di intercept request");
         Promise.reject(error);
       }
     );

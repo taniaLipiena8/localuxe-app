@@ -10,7 +10,7 @@ const AboutLocaluxe: React.FC = () => {
 
   function handleJoinUs() {
     navigate({
-      pathname: "/register",
+      pathname: "/about-us",
     });
   }
 
@@ -47,7 +47,7 @@ const AboutLocaluxe: React.FC = () => {
               },
             }}
           >
-            JOIN US
+            ABOUT US
           </Button>
         )}
       </Stack>

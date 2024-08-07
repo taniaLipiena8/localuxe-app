@@ -16,6 +16,7 @@ import { PrivateRoute } from "./PrivatePage";
 import TukarPoinPage from "./pages/tukarPoin/TukarPoinPage";
 import GamePage from "./pages/game/GamePage";
 import NotFoundPage from "./pages/notFound/NotFoundPage";
+import AboutUsPage from "./pages/about-us/AboutUsPage";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -42,6 +43,7 @@ function App() {
         <Route path="insights" element={<InsightPage />} />
         <Route path="insights/:id" element={<InsightDetailPage />} />
         <Route path="brands" element={<BrandsPage />} />
+        <Route path="about-us" element={<AboutUsPage/>}/>
         <Route
           path="account"
           element={
