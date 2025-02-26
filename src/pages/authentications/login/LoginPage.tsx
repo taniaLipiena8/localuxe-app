@@ -1,24 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Button,
   Card,
+  IconButton,
+  InputAdornment,
   Link,
   Stack,
   SxProps,
+  TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
-import React from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import EmailField from "./components/EmailField";
-import PasswordField from "./components/PasswordField";
-
-const LoginPage = () => {
-  const theme = useTheme();
-  const form = useForm();
-
+import React, { useContext, useEffect, useState } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import Field from "../../../components/formField/Field";
+import toast, { Toaster } from "react-hot-toast";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
+import axiosClient from "../../../services/AxiosClient";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import AuthContext from "../../../context/AuthProvider";
+const LoginPage: React.FC = () => {
+  // ============================================== Styles =================================================
   const rootStyle = {
-    backgroundColor: "#F7E7E7",
     height: "100vh",
     display: "flex",
     justifyContent: "center",
@@ -32,6 +36,7 @@ const LoginPage = () => {
     width: "400px",
     flexDirection: "column",
     borderRadius: "16px",
+    border: "1px solid #674342",
   };
 
   const logoStyle: SxProps = {
@@ -40,31 +45,135 @@ const LoginPage = () => {
     alignItems: "center",
     mb: 5,
   };
+
+  // ========================================= Hooks and States =============================================
+  const form = useForm();
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const {  setToken, setAuth, auth } =
+    useContext(AuthContext);
+
+  // ============================================== useEffects =================================================
+  useEffect(() => {
+    if (auth) {
+      navigate("/");
+    }
+  }, [auth]);
+
+  // ============================================== Functions =================================================
+
+  const handleOnSubmit = async (value: any) => {
+    try {
+      const body = {
+        email_pengguna: value.email,
+        password_pengguna: value.password,
+      };
+      const response = await axiosClient.post("/login", body, {
+        withCredentials: true,
+      });
+      setAuth("Logged in");
+      setToken(response.data.data.access_token);
+      const decoded = jwtDecode(response.data.data.access_token) as any;
+
+      localStorage.setItem("userId", String(decoded.id!));
+      localStorage.setItem("auth", "Logged in");
+      localStorage.setItem("refreshToken", response.data.data.refresh_token);
+
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+      console.log("Error Login", error);
+    }
+  };
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   return (
     <Stack sx={rootStyle}>
       <Card sx={cardStyle}>
         <Box sx={logoStyle}>
-          <Typography fontSize={"32px"}>Selamat datang di LOCALUXE</Typography>
+          <Typography color={"#674342"} fontSize={"32px"}>
+            Selamat datang di LOCALUXE
+          </Typography>
         </Box>
         <FormProvider {...form}>
-          <form>
+          <form onSubmit={form.handleSubmit(handleOnSubmit)}>
             <Box
               display={"flex"}
               flexDirection={"column"}
               width={"100%"}
               gap={2}
+              marginBottom={6}
             >
-              <EmailField />
-              <PasswordField />
-            </Box>
-            <Box
-              sx={{
-                mb: 6,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button variant="text">Lupa password?</Button>
+              <Controller
+                name="email"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Email"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Email"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        type="email"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Password"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        value={value ?? ""}
+                        onChange={onChange}
+                        fullWidth
+                        label="Password"
+                        variant="outlined"
+                        size="small"
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    }
+                  />
+                )}
+              />
             </Box>
             <Button
               type="submit"
@@ -75,8 +184,14 @@ const LoginPage = () => {
             </Button>
           </form>
         </FormProvider>
-        <Stack sx={{ display: "flex", justifyContent: "center", flexDirection:'row' }}>
-          <Typography fontSize={14} fontWeight={400}>
+        <Stack
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "row",
+          }}
+        >
+          <Typography fontSize={14} fontWeight={400} color={"#674342"} marginRight={1}>
             Belum memiliki akun?
           </Typography>
           <Link href="/register" color="inherit" underline="always">
@@ -84,6 +199,7 @@ const LoginPage = () => {
           </Link>
         </Stack>
       </Card>
+      <Toaster />
     </Stack>
   );
 };

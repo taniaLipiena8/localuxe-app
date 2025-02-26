@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   SxProps,
   Stack,
@@ -5,24 +7,31 @@ import {
   Box,
   Typography,
   Button,
-  useTheme,
   Link,
+  IconButton,
+  InputAdornment,
+  TextField,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormHelperText,
+  Input,
+  Avatar,
+  useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import EmailField from "../login/components/EmailField";
-import PasswordField from "../login/components/PasswordField";
-import CustomerForm from "./components/customer/CustomerForm";
-import { Margin, Troubleshoot } from "@mui/icons-material";
-import SellerForm from "./components/seller/SellerForm";
+import React, { useContext, useEffect, useState } from "react";
+import { useForm, FormProvider, Controller } from "react-hook-form";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
+import Field from "../../../components/formField/Field";
+import { MuiTelInput } from "mui-tel-input";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../../context/AuthProvider";
+import axiosClient from "../../../services/AxiosClient";
+import toast, { Toaster } from "react-hot-toast";
+import { debounce } from "lodash";
 
-const RegisterPage = () => {
-  const theme = useTheme();
-  const form = useForm();
-  const [isCustomer, setIsCustomer] = useState<boolean>(Troubleshoot);
-
+const RegisterPage: React.FC = () => {
   const rootStyle = {
-    backgroundColor: "#F7E7E7",
     minHeight: "100vh",
     display: "flex",
     justifyContent: "center",
@@ -37,68 +46,312 @@ const RegisterPage = () => {
     flexDirection: "column",
     borderRadius: "16px",
     marginY: 4,
+    border: "1px solid #674342",
   };
 
-  const logoStyle: SxProps = {
+  const titleStyle: SxProps = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     mb: 2,
   };
 
+  // ========================================= Hooks and States =============================================
+
+  const form = useForm();
+  const theme = useTheme()
+  const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [preview, setPreview] = useState<any>(null);
+  const [image, setImage] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // ============================================== useEffects =================================================
+  useEffect(() => {
+    if (auth) {
+      navigate("/");
+    }
+  }, [auth]);
+
+  // ============================================== Functions =================================================
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const redirect = debounce(() => {
+    navigate("/login");
+  }, 800);
+
+  const submitRegister = async (value: any) => {
+    setLoading(true);
+    const body = {
+      nama_lengkap: value.namaLengkap,
+      nama_pengguna: value.username,
+      email_pengguna: value.email,
+      password_pengguna: value.password,
+      gender: value.gender,
+      nomor_telepon: value.nomorTelepon,
+      gambar_pengguna: image,
+    };
+    try {
+      await axiosClient.post("/register", body, {
+        withCredentials: true,
+      });
+      toast.success(`Register Berhasil!`);
+      redirect();
+    } catch (error: any) {
+      console.log("test", error.response.data.message);
+
+      toast.error(`Register Error: ${error.response.data.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputFile = (event: HTMLInputElement) => {
+    if (event.files && event.files.length > 0) {
+      const temp = event.files[0];
+
+      const url = URL.createObjectURL(temp);
+      setPreview(url);
+      const reader = new FileReader();
+      reader.readAsDataURL(temp);
+
+      reader.onloadend = () => {
+        const base64Data = reader.result;
+        setImage(base64Data?.toString().split(",")[1]);
+      };
+    }
+  };
+
   return (
     <Stack sx={rootStyle}>
       <Card sx={cardStyle}>
-        <Box sx={logoStyle}>
-          <Typography fontSize={"32px"}>Buat Akun LOCALUXE</Typography>
-        </Box>
-        <Box
-          sx={{
-            flexDirection: "column",
-            display: "flex",
-            justifyContent: "start",
-            mb: 2,
-          }}
-        >
-          <Typography
-            fontSize={18}
-            fontWeight="bold"
-            sx={{ paddingBottom: 1, textAlign: "start" }}
-          >
-            Apa Peran Anda
+        <Box sx={titleStyle}>
+          <Typography fontSize={"32px"} color={"#674342"}>
+            Buat Akun LOCALUXE
           </Typography>
-          <Box
-            sx={{
-              flexDirection: "row",
-              display: "flex",
-            }}
-            gap={2}
-          >
-            <Button
-              disabled={isCustomer}
-              variant="contained"
-              onClick={() => setIsCustomer(true)}
-              sx={{ width: "100%", color: "white" }}
-            >
-              Customer
-            </Button>
-            <Button
-              disabled={!isCustomer}
-              variant="contained"
-              onClick={() => setIsCustomer(false)}
-              sx={{ width: "100%", color: "white" }}
-            >
-              Seller
-            </Button>
-          </Box>
         </Box>
+
         <FormProvider {...form}>
-          <form>
-            {isCustomer ? <CustomerForm /> : <SellerForm />}
+          <form onSubmit={form.handleSubmit(submitRegister)}>
+            <Stack
+              display={"flex"}
+              flexDirection={"column"}
+              width={"100%"}
+              gap={2}
+            >
+              <Controller
+                name="username"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Username"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Username"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="namaLengkap"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Nama Lengkap"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Nama Lengkap"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="email"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Email"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        label="Email"
+                        value={value ?? ""}
+                        onChange={onChange}
+                        variant="outlined"
+                        type="email"
+                        fullWidth
+                        size="small"
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                rules={{
+                  required: "This is required",
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})/,
+                    message:
+                      "Password harus memiliki huruf besar dan kecil, angka, karakter spesial, dan minimal berjumlah 6.",
+                  },
+                }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Password"
+                    child={
+                      <TextField
+                        error={!!error}
+                        helperText={error?.message}
+                        value={value ?? ""}
+                        onChange={onChange}
+                        fullWidth
+                        label="Password"
+                        variant="outlined"
+                        size="small"
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="gender"
+                control={form.control}
+                rules={{ required: "This is required", validate: (value) =>
+                  value === "female" ||
+                  "Harus perempuan!", }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Gender"
+                    child={
+                      <>
+                        <RadioGroup row value={value ?? ""} onChange={onChange}>
+                          <FormControlLabel
+                            value="female"
+                            control={<Radio />}
+                            label="Perempuan"
+                          />
+                          <FormControlLabel
+                            value="male"
+                            control={<Radio />}
+                            label="Laki-laki"
+                          />
+                          <FormControlLabel
+                            value="other"
+                            control={<Radio />}
+                            label="Lain-lain"
+                          />
+                        </RadioGroup>
+                        <FormHelperText sx={{color:theme.palette.error.main, marginLeft:1.5}}>{error?.message}</FormHelperText>
+                      </>
+                    }
+                  />
+                )}
+              />
+              <Controller
+                name="nomorTelepon"
+                control={form.control}
+                rules={{ required: "This is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Field
+                    title="Nomor Telepon"
+                    child={
+                      <MuiTelInput
+                        defaultCountry="ID"
+                        forceCallingCode
+                        disableFormatting
+                        onChange={onChange}
+                        value={value}
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    }
+                  />
+                )}
+              />
+              <Field
+                title="Photo"
+                child={
+                  <>
+                    <Input
+                      type="file"
+                      inputProps={{
+                        accept: "image/png, image/jpg, image/jpeg",
+                      }}
+                      onChange={(e) => {
+                        handleInputFile(e.target as HTMLInputElement);
+                      }}
+                    />
+                  </>
+                }
+              />
+              <Avatar src={preview} sx={{ width: 80, height: "auto" }} />
+            </Stack>
             <Button
               type="submit"
               variant="contained"
               sx={{ width: "100%", my: 4, color: "white" }}
+              disabled={loading}
             >
               Submit
             </Button>
@@ -111,7 +364,12 @@ const RegisterPage = () => {
             flexDirection: "row",
           }}
         >
-          <Typography fontSize={14} fontWeight={400}>
+          <Typography
+            fontSize={14}
+            fontWeight={400}
+            color={"#674342"}
+            marginRight={1}
+          >
             Sudah memiliki akun?
           </Typography>
           <Link href="/login" color="inherit" underline="always">
@@ -119,6 +377,7 @@ const RegisterPage = () => {
           </Link>
         </Stack>
       </Card>
+      <Toaster />
     </Stack>
   );
 };
