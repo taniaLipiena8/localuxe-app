@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
                 sx={{ color: "#674342" }}
                 onClick={() => {
                   handleClick(
-                    "https://www.facebook.com/people/Localuxe/61561194383927/"
+                    ""
                   );
                 }}
               >
@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
               <IconButton
                 sx={{ color: "#674342" }}
                 onClick={() => {
-                  handleClick("https://www.instagram.com/localuxe.online/");
+                  handleClick("");
                 }}
               >
                 <InstagramIcon fontSize="large" />
@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
               <IconButton
                 sx={{ color: "#674342" }}
                 onClick={() => {
-                  handleClick("https://x.com/LocaluxeOnline");
+                  handleClick("");
                 }}
               >
                 <XIcon fontSize="large" />

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
+
   return (
     <Box textAlign={"center"} paddingY={2} width={"100%"}>
       <Stack direction={"column"} alignItems={"center"} gap={3}>
